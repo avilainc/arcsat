@@ -31,10 +31,10 @@ def update_contact(contact_id: int, contact: schemas.ContactUpdate, db: Session 
     db_contact = db.query(models.Contact).filter(models.Contact.id == contact_id).first()
     if db_contact is None:
         raise HTTPException(status_code=404, detail="Contato não encontrado")
-    
+
     for key, value in contact.model_dump(exclude_unset=True).items():
         setattr(db_contact, key, value)
-    
+
     db.commit()
     db.refresh(db_contact)
     return db_contact
@@ -44,7 +44,7 @@ def delete_contact(contact_id: int, db: Session = Depends(get_db)):
     db_contact = db.query(models.Contact).filter(models.Contact.id == contact_id).first()
     if db_contact is None:
         raise HTTPException(status_code=404, detail="Contato não encontrado")
-    
+
     db.delete(db_contact)
     db.commit()
     return {"message": "Contato deletado com sucesso"}

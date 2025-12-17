@@ -31,10 +31,10 @@ def update_activity(activity_id: int, activity: schemas.ActivityUpdate, db: Sess
     db_activity = db.query(models.Activity).filter(models.Activity.id == activity_id).first()
     if db_activity is None:
         raise HTTPException(status_code=404, detail="Atividade não encontrada")
-    
+
     for key, value in activity.model_dump(exclude_unset=True).items():
         setattr(db_activity, key, value)
-    
+
     db.commit()
     db.refresh(db_activity)
     return db_activity
@@ -44,7 +44,7 @@ def delete_activity(activity_id: int, db: Session = Depends(get_db)):
     db_activity = db.query(models.Activity).filter(models.Activity.id == activity_id).first()
     if db_activity is None:
         raise HTTPException(status_code=404, detail="Atividade não encontrada")
-    
+
     db.delete(db_activity)
     db.commit()
     return {"message": "Atividade deletada com sucesso"}

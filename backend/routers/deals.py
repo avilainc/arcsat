@@ -31,10 +31,10 @@ def update_deal(deal_id: int, deal: schemas.DealUpdate, db: Session = Depends(ge
     db_deal = db.query(models.Deal).filter(models.Deal.id == deal_id).first()
     if db_deal is None:
         raise HTTPException(status_code=404, detail="Negócio não encontrado")
-    
+
     for key, value in deal.model_dump(exclude_unset=True).items():
         setattr(db_deal, key, value)
-    
+
     db.commit()
     db.refresh(db_deal)
     return db_deal
@@ -44,7 +44,7 @@ def delete_deal(deal_id: int, db: Session = Depends(get_db)):
     db_deal = db.query(models.Deal).filter(models.Deal.id == deal_id).first()
     if db_deal is None:
         raise HTTPException(status_code=404, detail="Negócio não encontrado")
-    
+
     db.delete(db_deal)
     db.commit()
     return {"message": "Negócio deletado com sucesso"}

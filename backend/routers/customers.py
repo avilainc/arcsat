@@ -31,10 +31,10 @@ def update_customer(customer_id: int, customer: schemas.CustomerUpdate, db: Sess
     db_customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
     if db_customer is None:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
-    
+
     for key, value in customer.model_dump(exclude_unset=True).items():
         setattr(db_customer, key, value)
-    
+
     db.commit()
     db.refresh(db_customer)
     return db_customer
@@ -44,7 +44,7 @@ def delete_customer(customer_id: int, db: Session = Depends(get_db)):
     db_customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
     if db_customer is None:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
-    
+
     db.delete(db_customer)
     db.commit()
     return {"message": "Cliente deletado com sucesso"}

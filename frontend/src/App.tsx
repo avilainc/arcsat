@@ -21,7 +21,7 @@ const App: React.FC = () => {
             <li><Link to="/activities">Atividades</Link></li>
           </ul>
         </nav>
-        
+
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />

@@ -13,6 +13,7 @@ Sistema completo de CRM (Customer Relationship Management) desenvolvido com Fast
 ## 📋 Tecnologias
 
 ### Backend
+
 - Python 3.8+
 - FastAPI
 - SQLAlchemy (ORM)
@@ -21,6 +22,7 @@ Sistema completo de CRM (Customer Relationship Management) desenvolvido com Fast
 - Uvicorn (servidor ASGI)
 
 ### Frontend
+
 - TypeScript
 - React 18
 - React Router DOM
@@ -33,16 +35,19 @@ Sistema completo de CRM (Customer Relationship Management) desenvolvido com Fast
 ### Backend (Python)
 
 1. Navegue até a pasta do backend:
+
 ```bash
 cd backend
 ```
 
 2. Crie um ambiente virtual (recomendado):
+
 ```bash
 python -m venv venv
 ```
 
 3. Ative o ambiente virtual:
+
 ```bash
 # Windows
 .\venv\Scripts\activate
@@ -52,11 +57,13 @@ source venv/bin/activate
 ```
 
 4. Instale as dependências:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 5. Inicie o servidor:
+
 ```bash
 uvicorn main:app --reload
 ```
@@ -67,16 +74,19 @@ Documentação da API: `http://localhost:8000/docs`
 ### Frontend (TypeScript/React)
 
 1. Navegue até a pasta do frontend:
+
 ```bash
 cd frontend
 ```
 
 2. Instale as dependências:
+
 ```bash
 npm install
 ```
 
 3. Inicie o servidor de desenvolvimento:
+
 ```bash
 npm run dev
 ```
@@ -122,6 +132,7 @@ Arcsat/
 ## 🔌 API Endpoints
 
 ### Clientes
+
 - `GET /api/customers` - Listar todos os clientes
 - `GET /api/customers/{id}` - Obter cliente específico
 - `POST /api/customers` - Criar novo cliente
@@ -129,6 +140,7 @@ Arcsat/
 - `DELETE /api/customers/{id}` - Deletar cliente
 
 ### Negócios
+
 - `GET /api/deals` - Listar todos os negócios
 - `GET /api/deals/{id}` - Obter negócio específico
 - `POST /api/deals` - Criar novo negócio
@@ -136,6 +148,7 @@ Arcsat/
 - `DELETE /api/deals/{id}` - Deletar negócio
 
 ### Contatos
+
 - `GET /api/contacts` - Listar todos os contatos
 - `GET /api/contacts/{id}` - Obter contato específico
 - `POST /api/contacts` - Criar novo contato
@@ -143,6 +156,7 @@ Arcsat/
 - `DELETE /api/contacts/{id}` - Deletar contato
 
 ### Atividades
+
 - `GET /api/activities` - Listar todas as atividades
 - `GET /api/activities/{id}` - Obter atividade específica
 - `POST /api/activities` - Criar nova atividade
