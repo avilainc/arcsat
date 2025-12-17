@@ -1,6 +1,21 @@
-# Sistema CRM - Python & TypeScript
+# 🚀 CRM Arcsat - Sistema Completo
 
-Sistema completo de CRM (Customer Relationship Management) desenvolvido com FastAPI (Python) no backend e React (TypeScript) no frontend.
+Sistema completo de CRM (Customer Relationship Management) desenvolvido com **FastAPI + MongoDB** no backend e **React + TypeScript** no frontend.
+
+## 📋 Stack Tecnológica
+
+### Backend
+- **FastAPI** - Framework web moderno e rápido
+- **MongoDB** - Banco de dados NoSQL (migrado de SQLite)
+- **Motor** - Driver assíncrono para MongoDB
+- **Pydantic** - Validação de dados
+- **Uvicorn** - Servidor ASGI
+
+### Frontend
+- **React** - Biblioteca UI
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool ultrarrápido
+- **Axios** - Cliente HTTP
 
 ## 🚀 Funcionalidades
 
@@ -8,6 +23,8 @@ Sistema completo de CRM (Customer Relationship Management) desenvolvido com Fast
 - **Gestão de Negócios**: Acompanhamento de oportunidades de vendas com pipeline
 - **Gestão de Contatos**: Múltiplos contatos por cliente
 - **Gestão de Atividades**: Tarefas, ligações, reuniões, emails e notas
+- **API RESTful**: Documentação automática com Swagger
+- **MongoDB**: Escalável e flexível para produção
 - **Dashboard**: Visão geral do sistema
 
 ## 📋 Tecnologias

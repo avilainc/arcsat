@@ -1,6 +1,24 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from datetime import datetime
+from bson import ObjectId
+
+# Helper para ObjectId
+class PyObjectId(ObjectId):
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v):
+        if not ObjectId.is_valid(v):
+            raise ValueError("Invalid ObjectId")
+        return ObjectId(v)
+
+    @classmethod
+    def __get_pydantic_json_schema__(cls, field_schema):
+        field_schema.update(type="string")
+
 
 # Customer Schemas
 class CustomerBase(BaseModel):
@@ -21,12 +39,13 @@ class CustomerUpdate(BaseModel):
     status: Optional[str] = None
 
 class Customer(CustomerBase):
-    id: int
+    id: str = Field(alias="_id")
     created_at: datetime
     updated_at: datetime
 
     class Config:
-        from_attributes = True
+        populate_by_name = True
+        json_encoders = {ObjectId: str}
 
 
 # Deal Schemas
@@ -35,7 +54,7 @@ class DealBase(BaseModel):
     description: Optional[str] = None
     value: float
     stage: str
-    customer_id: int
+    customer_id: str
     probability: int = 50
     expected_close_date: Optional[datetime] = None
 
@@ -51,12 +70,13 @@ class DealUpdate(BaseModel):
     expected_close_date: Optional[datetime] = None
 
 class Deal(DealBase):
-    id: int
+    id: str = Field(alias="_id")
     created_at: datetime
     updated_at: datetime
 
     class Config:
-        from_attributes = True
+        populate_by_name = True
+        json_encoders = {ObjectId: str}
 
 
 # Contact Schemas
@@ -65,7 +85,7 @@ class ContactBase(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     position: Optional[str] = None
-    customer_id: int
+    customer_id: str
 
 class ContactCreate(ContactBase):
     pass
@@ -77,11 +97,12 @@ class ContactUpdate(BaseModel):
     position: Optional[str] = None
 
 class Contact(ContactBase):
-    id: int
+    id: str = Field(alias="_id")
     created_at: datetime
 
     class Config:
-        from_attributes = True
+        populate_by_name = True
+        json_encoders = {ObjectId: str}
 
 
 # Activity Schemas
@@ -90,8 +111,8 @@ class ActivityBase(BaseModel):
     description: Optional[str] = None
     activity_type: str
     status: str = "pending"
-    customer_id: int
-    deal_id: Optional[int] = None
+    customer_id: str
+    deal_id: Optional[str] = None
     due_date: Optional[datetime] = None
 
 class ActivityCreate(ActivityBase):
@@ -105,8 +126,9 @@ class ActivityUpdate(BaseModel):
     due_date: Optional[datetime] = None
 
 class Activity(ActivityBase):
-    id: int
+    id: str = Field(alias="_id")
     created_at: datetime
 
     class Config:
-        from_attributes = True
+        populate_by_name = True
+        json_encoders = {ObjectId: str}

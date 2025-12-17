@@ -1,20 +1,25 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./crm.db"
+# Carregar variáveis de ambiente
+load_dotenv()
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# Configuração do MongoDB
+MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017/arcsat_crm")
+DATABASE_NAME = os.getenv("DATABASE_NAME", "arcsat_crm")
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Cliente MongoDB assíncrono para FastAPI
+client = AsyncIOMotorClient(MONGODB_URL)
+database = client[DATABASE_NAME]
 
-Base = declarative_base()
+# Coleções
+customers_collection = database.get_collection("customers")
+deals_collection = database.get_collection("deals")
+activities_collection = database.get_collection("activities")
+contacts_collection = database.get_collection("contacts")
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# Dependência para obter o database
+async def get_database():
+    return database

@@ -1,50 +1,73 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
 from typing import List
-import models, schemas
-from database import get_db
+from datetime import datetime
+from bson import ObjectId
+import schemas
+from database import customers_collection
+from models import customer_helper
 
 router = APIRouter()
 
 @router.get("/", response_model=List[schemas.Customer])
-def get_customers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    customers = db.query(models.Customer).offset(skip).limit(limit).all()
+async def get_customers(skip: int = 0, limit: int = 100):
+    customers = []
+    async for customer in customers_collection.find().skip(skip).limit(limit):
+        customers.append(customer_helper(customer))
     return customers
 
 @router.get("/{customer_id}", response_model=schemas.Customer)
-def get_customer(customer_id: int, db: Session = Depends(get_db)):
-    customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
+async def get_customer(customer_id: str):
+    if not ObjectId.is_valid(customer_id):
+        raise HTTPException(status_code=400, detail="ID inválido")
+    
+    customer = await customers_collection.find_one({"_id": ObjectId(customer_id)})
     if customer is None:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
-    return customer
+    return customer_helper(customer)
 
 @router.post("/", response_model=schemas.Customer)
-def create_customer(customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
-    db_customer = models.Customer(**customer.model_dump())
-    db.add(db_customer)
-    db.commit()
-    db.refresh(db_customer)
-    return db_customer
+async def create_customer(customer: schemas.CustomerCreate):
+    customer_dict = customer.model_dump()
+    customer_dict["created_at"] = datetime.utcnow()
+    customer_dict["updated_at"] = datetime.utcnow()
+    
+    result = await customers_collection.insert_one(customer_dict)
+    new_customer = await customers_collection.find_one({"_id": result.inserted_id})
+    return customer_helper(new_customer)
 
 @router.put("/{customer_id}", response_model=schemas.Customer)
-def update_customer(customer_id: int, customer: schemas.CustomerUpdate, db: Session = Depends(get_db)):
-    db_customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
-    if db_customer is None:
-        raise HTTPException(status_code=404, detail="Cliente não encontrado")
-
-    for key, value in customer.model_dump(exclude_unset=True).items():
-        setattr(db_customer, key, value)
-
-    db.commit()
-    db.refresh(db_customer)
-    return db_customer
+async def update_customer(customer_id: str, customer: schemas.CustomerUpdate):
+    if not ObjectId.is_valid(customer_id):
+        raise HTTPException(status_code=400, detail="ID inválido")
+    
+    update_data = {k: v for k, v in customer.model_dump(exclude_unset=True).items() if v is not None}
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum campo para atualizar")
+    
+    update_data["updated_at"] = datetime.utcnow()
+    
+    result = await customers_collection.update_one(
+        {"_id": ObjectId(customer_id)},
+        {"$set": update_data}
+    )
+    
+    if result.modified_count == 0:
+        existing = await customers_collection.find_one({"_id": ObjectId(customer_id)})
+        if not existing:
+            raise HTTPException(status_code=404, detail="Cliente não encontrado")
+    
+    updated_customer = await customers_collection.find_one({"_id": ObjectId(customer_id)})
+    return customer_helper(updated_customer)
 
 @router.delete("/{customer_id}")
-def delete_customer(customer_id: int, db: Session = Depends(get_db)):
-    db_customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
-    if db_customer is None:
+async def delete_customer(customer_id: str):
+    if not ObjectId.is_valid(customer_id):
+        raise HTTPException(status_code=400, detail="ID inválido")
+    
+    result = await customers_collection.delete_one({"_id": ObjectId(customer_id)})
+    
+    if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
-
-    db.delete(db_customer)
-    db.commit()
+    
     return {"message": "Cliente deletado com sucesso"}
