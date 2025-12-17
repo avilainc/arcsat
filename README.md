@@ -5,6 +5,7 @@ Sistema completo de CRM (Customer Relationship Management) desenvolvido com **Fa
 ## 📋 Stack Tecnológica
 
 ### Backend
+
 - **FastAPI** - Framework web moderno e rápido
 - **MongoDB** - Banco de dados NoSQL (migrado de SQLite)
 - **Motor** - Driver assíncrono para MongoDB
@@ -12,6 +13,7 @@ Sistema completo de CRM (Customer Relationship Management) desenvolvido com **Fa
 - **Uvicorn** - Servidor ASGI
 
 ### Frontend
+
 - **React** - Biblioteca UI
 - **TypeScript** - Tipagem estática
 - **Vite** - Build tool ultrarrápido
