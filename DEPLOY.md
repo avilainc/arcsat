@@ -23,7 +23,7 @@ docker-compose logs -f
 docker-compose down
 ```
 
-Acesse: http://localhost
+Acesse: <http://localhost>
 
 ---
 
@@ -31,7 +31,8 @@ Acesse: http://localhost
 
 **Vantagens:** Deploy automático via Git, gratuito, banco PostgreSQL incluído
 
-#### Backend:
+#### Backend
+
 1. Crie conta em [Railway.app](https://railway.app)
 2. Click "New Project" → "Deploy from GitHub repo"
 3. Selecione o repositório
@@ -40,7 +41,8 @@ Acesse: http://localhost
    - Railway detecta Python automaticamente
 5. Adicione variáveis de ambiente se necessário
 
-#### Frontend:
+#### Frontend
+
 1. No mesmo projeto, click "+ New"
 2. Selecione "GitHub Repo" novamente
 3. Configure:
@@ -54,7 +56,8 @@ Acesse: http://localhost
 
 **Vantagens:** Interface simples, SSL gratuito, domínio próprio
 
-#### Backend:
+#### Backend
+
 1. Crie conta em [Render.com](https://render.com)
 2. "New +" → "Web Service"
 3. Conecte seu repositório
@@ -66,7 +69,8 @@ Acesse: http://localhost
    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 5. Click "Create Web Service"
 
-#### Frontend:
+#### Frontend
+
 1. "New +" → "Static Site"
 2. Selecione o repositório
 3. Configurações:
@@ -81,7 +85,8 @@ Acesse: http://localhost
 
 **Vantagens:** Deploy super rápido para frontend, domínio .vercel.app gratuito
 
-#### Frontend no Vercel:
+#### Frontend no Vercel
+
 ```bash
 cd frontend
 npm install -g vercel
@@ -89,6 +94,7 @@ vercel
 ```
 
 Ou via dashboard:
+
 1. [Vercel.com](https://vercel.com) → "New Project"
 2. Importe repositório
 3. Configure:
@@ -105,7 +111,8 @@ Ou via dashboard:
 
 **Vantagens:** Clássico, confiável, fácil de usar
 
-#### Backend:
+#### Backend
+
 ```bash
 cd backend
 heroku login
@@ -115,7 +122,8 @@ git subtree push --prefix backend heroku main
 # Ou via dashboard do Heroku
 ```
 
-#### Frontend:
+#### Frontend
+
 ```bash
 cd frontend
 heroku create crm-frontend-app
@@ -130,28 +138,33 @@ git subtree push --prefix frontend heroku main
 
 **Para servidores VPS:**
 
-#### 1. Instalar Docker:
+#### 1. Instalar Docker
+
 ```bash
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo apt install docker-compose
 ```
 
-#### 2. Clone o projeto:
+#### 2. Clone o projeto
+
 ```bash
 git clone <seu-repositorio>
 cd Arcsat
 ```
 
-#### 3. Configure domínio (opcional):
+#### 3. Configure domínio (opcional)
+
 Edite `frontend/nginx.conf` e adicione seu domínio
 
-#### 4. Deploy:
+#### 4. Deploy
+
 ```bash
 docker-compose up -d
 ```
 
-#### 5. SSL com Let's Encrypt (opcional):
+#### 5. SSL com Let's Encrypt (opcional)
+
 ```bash
 sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d seudominio.com
@@ -164,6 +177,7 @@ sudo certbot --nginx -d seudominio.com
 ### Variáveis de Ambiente (Backend)
 
 Crie um arquivo `.env` se necessário:
+
 ```env
 DATABASE_URL=sqlite:///./crm.db
 # Para PostgreSQL em produção:
@@ -173,6 +187,7 @@ DATABASE_URL=sqlite:///./crm.db
 ### Atualizar URL da API (Frontend)
 
 Em `frontend/src/services/api.ts`, atualize:
+
 ```typescript
 const api = axios.create({
   baseURL: 'https://seu-backend-url.com/api', // URL do seu backend em produção
@@ -187,16 +202,19 @@ const api = axios.create({
 ## 📊 Banco de Dados
 
 ### SQLite (Desenvolvimento)
+
 - Já configurado, arquivo `crm.db` criado automaticamente
 
 ### PostgreSQL (Produção Recomendada)
 
 1. Instale psycopg2:
+
 ```bash
 pip install psycopg2-binary
 ```
 
 2. Atualize `backend/database.py`:
+
 ```python
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -230,14 +248,17 @@ SQLALCHEMY_DATABASE_URL = os.getenv(
 
 ## 🆘 Troubleshooting
 
-### Backend não conecta ao banco:
+### Backend não conecta ao banco
+
 ```bash
 # Verifique permissões do arquivo crm.db
 chmod 666 backend/crm.db
 ```
 
-### CORS errors:
+### CORS errors
+
 Atualize `backend/main.py`:
+
 ```python
 app.add_middleware(
     CORSMiddleware,
@@ -248,7 +269,8 @@ app.add_middleware(
 )
 ```
 
-### Frontend não encontra API:
+### Frontend não encontra API
+
 Verifique `frontend/src/services/api.ts` - URL da API deve estar correta
 
 ---
