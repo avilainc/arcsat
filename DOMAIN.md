@@ -2,9 +2,9 @@
 
 ## 📋 Domínios Configurados
 
-- **Frontend**: https://arcsat.com.br (ou https://www.arcsat.com.br)
-- **Backend API**: https://api.arcsat.com.br
-- **Documentação API**: https://api.arcsat.com.br/docs
+- **Frontend**: <https://arcsat.com.br> (ou <https://www.arcsat.com.br>)
+- **Backend API**: <https://api.arcsat.com.br>
+- **Documentação API**: <https://api.arcsat.com.br/docs>
 
 ---
 
@@ -12,7 +12,7 @@
 
 Configure os seguintes registros DNS no seu provedor (Registro.br, Hostgator, etc.):
 
-### Registros A (IPv4):
+### Registros A (IPv4)
 
 ```
 @ (ou arcsat.com.br)        A      [IP do servidor ou Railway]
@@ -20,7 +20,7 @@ www                         A      [IP do servidor ou Railway]
 api                         A      [IP do servidor backend]
 ```
 
-### Ou CNAME (para Railway):
+### Ou CNAME (para Railway)
 
 ```
 @                          CNAME   arcsat-frontend.up.railway.app.
@@ -34,7 +34,7 @@ api                        CNAME   arcsat-backend.up.railway.app.
 
 ## 🚀 Configuração no Railway
 
-### Para Backend (api.arcsat.com.br):
+### Para Backend (api.arcsat.com.br)
 
 1. No Railway, acesse o serviço **backend**
 2. Vá em **Settings** → **Domains**
@@ -42,7 +42,7 @@ api                        CNAME   arcsat-backend.up.railway.app.
 4. Digite: `api.arcsat.com.br`
 5. Railway mostrará o CNAME para configurar no DNS
 
-### Para Frontend (arcsat.com.br):
+### Para Frontend (arcsat.com.br)
 
 1. No Railway, acesse o serviço **frontend**
 2. Vá em **Settings** → **Domains**
@@ -56,6 +56,7 @@ api                        CNAME   arcsat-backend.up.railway.app.
 ## 🔒 SSL/HTTPS (Automático)
 
 Railway provisiona certificados SSL **automaticamente** via Let's Encrypt:
+
 - ✅ Gratuito
 - ✅ Renovação automática
 - ✅ HTTPS forçado
@@ -99,6 +100,7 @@ nslookup www.arcsat.com.br
 ### www → sem www (ou vice-versa)
 
 Configure no Railway em **Settings** → **Domains**:
+
 - Marque opção para redirecionar `www.arcsat.com.br` → `arcsat.com.br`
 
 ### HTTP → HTTPS
@@ -113,7 +115,7 @@ Railway força HTTPS automaticamente. Não precisa configurar.
 
 - Aguarde até 48h (geralmente 1-2h)
 - Limpe cache DNS: `ipconfig /flushdns` (Windows)
-- Verifique em: https://dnschecker.org
+- Verifique em: <https://dnschecker.org>
 
 ### SSL não ativa
 
@@ -124,21 +126,23 @@ Railway força HTTPS automaticamente. Não precisa configurar.
 ### CORS Error
 
 Já configurado no `backend/main.py` para aceitar:
+
 - ✅ arcsat.com.br
-- ✅ www.arcsat.com.br
+- ✅ <www.arcsat.com.br>
 - ✅ HTTP e HTTPS
 
 ### API não conecta
 
 Verifique `frontend/src/services/api.ts`:
+
 - URL deve ser: `https://api.arcsat.com.br/api`
 
 ---
 
 ## 📧 Suporte
 
-- **Railway**: https://railway.app/help
-- **Registro.br**: https://registro.br
+- **Railway**: <https://railway.app/help>
+- **Registro.br**: <https://registro.br>
 
 ---
 
