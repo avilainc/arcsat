@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from routers import customers, deals, activities, contacts, cnpj, cep, customer_extras, analytics, automation, pipeline
+from routers import customers, deals, activities, contacts, cnpj, cep, customer_extras, analytics, automation, pipeline, reports, import_data
 from database import client
 import os
 from dotenv import load_dotenv
@@ -54,6 +54,8 @@ app.include_router(customer_extras.router, prefix="/api", tags=["customer-extras
 app.include_router(analytics.router, prefix="/api", tags=["analytics"])
 app.include_router(automation.router, prefix="/api", tags=["automation"])
 app.include_router(pipeline.router, prefix="/api", tags=["pipeline"])
+app.include_router(reports.router, prefix="/api", tags=["reports"])
+app.include_router(import_data.router, prefix="/api", tags=["import"])
 
 @app.get("/")
 async def read_root():
