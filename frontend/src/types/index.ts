@@ -7,6 +7,23 @@ export interface Customer {
   status: string;
   created_at: string;
   updated_at: string;
+  // Dados CNPJ
+  cnpj?: string;
+  razao_social?: string;
+  nome_fantasia?: string;
+  porte?: string;
+  natureza_juridica?: string;
+  capital_social?: number;
+  cep?: string;
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  municipio?: string;
+  uf?: string;
+  atividade_principal?: string;
+  data_abertura?: string;
+  situacao?: string;
 }
 
 export interface CustomerCreate {
@@ -14,7 +31,44 @@ export interface CustomerCreate {
   email: string;
   phone?: string;
   company?: string;
-  status?: string;
+  status: string;
+  cnpj?: string;
+  razao_social?: string;
+  nome_fantasia?: string;
+  porte?: string;
+  natureza_juridica?: string;
+  capital_social?: number;
+  cep?: string;
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  municipio?: string;
+  uf?: string;
+  atividade_principal?: string;
+  data_abertura?: string;
+  situacao?: string;
+}
+
+export interface CNPJData {
+  cnpj: string;
+  razao_social: string;
+  nome_fantasia?: string;
+  porte?: string;
+  natureza_juridica?: string;
+  capital_social?: number;
+  cep?: string;
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  municipio?: string;
+  uf?: string;
+  email?: string;
+  telefone?: string;
+  atividade_principal?: string;
+  data_abertura?: string;
+  situacao?: string;
 }
 
 export interface Deal {

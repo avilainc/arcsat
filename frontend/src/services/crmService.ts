@@ -1,5 +1,11 @@
 import api from './api';
-import { Customer, CustomerCreate, Deal, DealCreate, Contact, ContactCreate, Activity, ActivityCreate } from '../types';
+import { Customer, CustomerCreate, Deal, DealCreate, Contact, ContactCreate, Activity, ActivityCreate, CNPJData } from '../types';
+
+// CNPJ
+export const getCNPJData = async (cnpj: string): Promise<CNPJData> => {
+  const response = await api.get(`/cnpj/${cnpj}`);
+  return response.data;
+};
 
 // Customers
 export const getCustomers = async (): Promise<Customer[]> => {

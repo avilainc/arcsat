@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { getCustomers, createCustomer, deleteCustomer } from '../services/crmService';
+import { getCustomers, createCustomer, deleteCustomer, getCNPJData } from '../services/crmService';
 import { Customer, CustomerCreate } from '../types';
 
 const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [loadingCNPJ, setLoadingCNPJ] = useState(false);
   const [formData, setFormData] = useState<CustomerCreate>({
     name: '',
     email: '',
@@ -49,6 +50,55 @@ const Customers: React.FC = () => {
     }
   };
 
+  const formatCNPJ = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 14) {
+      return numbers.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+    }
+    return value;
+  };
+
+  const handleCNPJChange = async (value: string) => {
+    const cnpjClean = value.replace(/\D/g, '');
+    setFormData({ ...formData, cnpj: formatCNPJ(value) });
+
+    // Se CNPJ tiver 14 dígitos, buscar dados
+    if (cnpjClean.length === 14) {
+      setLoadingCNPJ(true);
+      try {
+        const data = await getCNPJData(cnpjClean);
+        setFormData({
+          ...formData,
+          cnpj: formatCNPJ(data.cnpj),
+          razao_social: data.razao_social,
+          nome_fantasia: data.nome_fantasia || '',
+          company: data.nome_fantasia || data.razao_social,
+          name: data.nome_fantasia || data.razao_social,
+          email: data.email || formData.email,
+          phone: data.telefone || formData.phone,
+          porte: data.porte,
+          natureza_juridica: data.natureza_juridica,
+          capital_social: data.capital_social,
+          cep: data.cep,
+          logradouro: data.logradouro,
+          numero: data.numero,
+          complemento: data.complemento,
+          bairro: data.bairro,
+          municipio: data.municipio,
+          uf: data.uf,
+          atividade_principal: data.atividade_principal,
+          data_abertura: data.data_abertura,
+          situacao: data.situacao,
+        });
+      } catch (error) {
+        console.error('Erro ao buscar CNPJ:', error);
+        alert('CNPJ não encontrado ou erro na consulta');
+      } finally {
+        setLoadingCNPJ(false);
+      }
+    }
+  };
+
   return (
     <div className="customers-page">
       <div className="page-header">
@@ -60,6 +110,16 @@ const Customers: React.FC = () => {
 
       {showForm && (
         <form className="customer-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>CNPJ {loadingCNPJ && '(Buscando...)'}</label>
+            <input
+              type="text"
+              placeholder="00.000.000/0000-00"
+              maxLength={18}
+              value={formData.cnpj || ''}
+              onChange={(e) => handleCNPJChange(e.target.value)}
+            />
+          </div>
           <div className="form-group">
             <label>Nome *</label>
             <input
@@ -94,6 +154,44 @@ const Customers: React.FC = () => {
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
             />
           </div>
+
+          {formData.razao_social && (
+            <>
+              <div className="form-group">
+                <label>Razão Social</label>
+                <input type="text" value={formData.razao_social} readOnly />
+              </div>
+              <div className="form-group">
+                <label>Nome Fantasia</label>
+                <input type="text" value={formData.nome_fantasia || ''} readOnly />
+              </div>
+              <div className="form-group">
+                <label>Endereço</label>
+                <input
+                  type="text"
+                  value={`${formData.logradouro || ''}, ${formData.numero || ''} - ${formData.bairro || ''}, ${formData.municipio || ''}/${formData.uf || ''}`}
+                  readOnly
+                />
+              </div>
+              <div className="form-group">
+                <label>CEP</label>
+                <input type="text" value={formData.cep || ''} readOnly />
+              </div>
+              <div className="form-group">
+                <label>Atividade Principal</label>
+                <input type="text" value={formData.atividade_principal || ''} readOnly />
+              </div>
+              <div className="form-group">
+                <label>Porte</label>
+                <input type="text" value={formData.porte || ''} readOnly />
+              </div>
+              <div className="form-group">
+                <label>Situação Cadastral</label>
+                <input type="text" value={formData.situacao || ''} readOnly />
+              </div>
+            </>
+          )}
+
           <div className="form-group">
             <label>Status</label>
             <select
@@ -105,7 +203,9 @@ const Customers: React.FC = () => {
               <option value="lead">Lead</option>
             </select>
           </div>
-          <button type="submit" className="btn-primary">Salvar</button>
+          <button type="submit" className="btn-primary" disabled={loadingCNPJ}>
+            {loadingCNPJ ? 'Aguarde...' : 'Salvar'}
+          </button>
         </form>
       )}
 

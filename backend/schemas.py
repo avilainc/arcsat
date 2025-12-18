@@ -27,6 +27,25 @@ class CustomerBase(BaseModel):
     phone: Optional[str] = None
     company: Optional[str] = None
     status: str = "active"
+    # Dados CNPJ/SEFAZ
+    cnpj: Optional[str] = None
+    razao_social: Optional[str] = None
+    nome_fantasia: Optional[str] = None
+    porte: Optional[str] = None
+    natureza_juridica: Optional[str] = None
+    capital_social: Optional[float] = None
+    # Endereço
+    cep: Optional[str] = None
+    logradouro: Optional[str] = None
+    numero: Optional[str] = None
+    complemento: Optional[str] = None
+    bairro: Optional[str] = None
+    municipio: Optional[str] = None
+    uf: Optional[str] = None
+    # Dados adicionais
+    atividade_principal: Optional[str] = None
+    data_abertura: Optional[str] = None
+    situacao: Optional[str] = None
 
 class CustomerCreate(CustomerBase):
     pass
@@ -37,6 +56,22 @@ class CustomerUpdate(BaseModel):
     phone: Optional[str] = None
     company: Optional[str] = None
     status: Optional[str] = None
+    cnpj: Optional[str] = None
+    razao_social: Optional[str] = None
+    nome_fantasia: Optional[str] = None
+    porte: Optional[str] = None
+    natureza_juridica: Optional[str] = None
+    capital_social: Optional[float] = None
+    cep: Optional[str] = None
+    logradouro: Optional[str] = None
+    numero: Optional[str] = None
+    complemento: Optional[str] = None
+    bairro: Optional[str] = None
+    municipio: Optional[str] = None
+    uf: Optional[str] = None
+    atividade_principal: Optional[str] = None
+    data_abertura: Optional[str] = None
+    situacao: Optional[str] = None
 
 class Customer(CustomerBase):
     id: str = Field(alias="_id")
@@ -46,6 +81,27 @@ class Customer(CustomerBase):
     class Config:
         populate_by_name = True
         json_encoders = {ObjectId: str}
+
+# Schema para resposta da API CNPJ
+class CNPJData(BaseModel):
+    cnpj: str
+    razao_social: str
+    nome_fantasia: Optional[str] = None
+    porte: Optional[str] = None
+    natureza_juridica: Optional[str] = None
+    capital_social: Optional[float] = None
+    cep: Optional[str] = None
+    logradouro: Optional[str] = None
+    numero: Optional[str] = None
+    complemento: Optional[str] = None
+    bairro: Optional[str] = None
+    municipio: Optional[str] = None
+    uf: Optional[str] = None
+    email: Optional[str] = None
+    telefone: Optional[str] = None
+    atividade_principal: Optional[str] = None
+    data_abertura: Optional[str] = None
+    situacao: Optional[str] = None
 
 
 # Deal Schemas
