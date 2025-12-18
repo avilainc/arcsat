@@ -146,10 +146,13 @@ class DealBase(BaseModel):
     title: str
     description: Optional[str] = None
     value: float
-    stage: str
+    stage: str = "Prospecção"
+    status: str = "open"  # open, won, lost
     customer_id: str
     probability: int = 50
     expected_close_date: Optional[datetime] = None
+    lost_reason: Optional[str] = None
+    closed_at: Optional[datetime] = None
 
 class DealCreate(DealBase):
     pass
@@ -159,8 +162,11 @@ class DealUpdate(BaseModel):
     description: Optional[str] = None
     value: Optional[float] = None
     stage: Optional[str] = None
+    status: Optional[str] = None
     probability: Optional[int] = None
     expected_close_date: Optional[datetime] = None
+    lost_reason: Optional[str] = None
+    closed_at: Optional[datetime] = None
 
 class Deal(DealBase):
     id: str = Field(alias="_id")
@@ -274,6 +280,8 @@ class ActivityBase(BaseModel):
     customer_id: str
     deal_id: Optional[str] = None
     due_date: Optional[datetime] = None
+    automated: bool = False
+    priority: Optional[str] = None  # low, medium, high
 
 class ActivityCreate(ActivityBase):
     pass
@@ -284,6 +292,8 @@ class ActivityUpdate(BaseModel):
     activity_type: Optional[str] = None
     status: Optional[str] = None
     due_date: Optional[datetime] = None
+    automated: Optional[bool] = None
+    priority: Optional[str] = None
 
 class Activity(ActivityBase):
     id: str = Field(alias="_id")

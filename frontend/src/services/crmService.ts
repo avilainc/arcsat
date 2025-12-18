@@ -7,6 +7,76 @@ export const getCNPJData = async (cnpj: string): Promise<CNPJData> => {
   return response.data;
 };
 
+// CEP
+export const getCEPData = async (cep: string): Promise<any> => {
+  const response = await api.get(`/cep/${cep}`);
+  return response.data;
+};
+
+// Anexos
+export const getCustomerAttachments = async (customerId: string): Promise<any[]> => {
+  const response = await api.get(`/attachments/customer/${customerId}`);
+  return response.data;
+};
+
+export const uploadAttachment = async (customerId: string, file: File): Promise<any> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await api.post(`/attachments/upload/${customerId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data;
+};
+
+export const deleteAttachment = async (attachmentId: string): Promise<void> => {
+  await api.delete(`/attachments/${attachmentId}`);
+};
+
+// Interações
+export const getCustomerInteractions = async (customerId: string): Promise<any[]> => {
+  const response = await api.get(`/interactions/customer/${customerId}`);
+  return response.data;
+};
+
+export const createInteraction = async (interaction: any): Promise<any> => {
+  const response = await api.post('/interactions', interaction);
+  return response.data;
+};
+
+export const updateInteraction = async (id: string, interaction: any): Promise<any> => {
+  const response = await api.put(`/interactions/${id}`, interaction);
+  return response.data;
+};
+
+export const deleteInteraction = async (id: string): Promise<void> => {
+  await api.delete(`/interactions/${id}`);
+};
+
+// Notas
+export const getCustomerNotes = async (customerId: string): Promise<any[]> => {
+  const response = await api.get(`/notes/customer/${customerId}`);
+  return response.data;
+};
+
+export const createNote = async (note: any): Promise<any> => {
+  const response = await api.post('/notes', note);
+  return response.data;
+};
+
+export const updateNote = async (id: string, note: any): Promise<any> => {
+  const response = await api.put(`/notes/${id}`, note);
+  return response.data;
+};
+
+export const togglePinNote = async (id: string): Promise<any> => {
+  const response = await api.put(`/notes/${id}/pin`);
+  return response.data;
+};
+
+export const deleteNote = async (id: string): Promise<void> => {
+  await api.delete(`/notes/${id}`);
+};
+
 // Customers
 export const getCustomers = async (): Promise<Customer[]> => {
   const response = await api.get('/customers');
