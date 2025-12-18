@@ -13,7 +13,7 @@ To enable automatic deployment to Railway via GitHub Actions, you need to config
   2. Navigate to Settings → Tokens
   3. Click "Create Token"
   4. Copy the generated token
-- **Example**: `8f6d3a48-3760-4b06-9c61-f6fe51f63367`
+- **Format**: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
 ### 2. RAILWAY_SERVICE_BACKEND
 - **Description**: The service ID for the backend service
@@ -22,7 +22,7 @@ To enable automatic deployment to Railway via GitHub Actions, you need to config
   2. Click on your backend service
   3. The service ID is in the URL: `railway.app/project/{PROJECT_ID}/service/{SERVICE_ID}`
   4. Copy the SERVICE_ID part
-- **Example**: `bc8cb3dc-e9c5-4fdb-b720-5049446d5a06`
+- **Format**: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
 ### 3. RAILWAY_SERVICE_FRONTEND
 - **Description**: The service ID for the frontend service
@@ -31,7 +31,7 @@ To enable automatic deployment to Railway via GitHub Actions, you need to config
   2. Click on your frontend service
   3. The service ID is in the URL: `railway.app/project/{PROJECT_ID}/service/{SERVICE_ID}`
   4. Copy the SERVICE_ID part
-- **Example**: Similar format to backend service ID
+- **Format**: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
 ## How to Add Secrets
 
