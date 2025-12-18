@@ -83,7 +83,7 @@ const DashboardAdvanced: React.FC = () => {
           endpoint = '/automation/contract-renewal-reminder';
           break;
       }
-      
+
       const res = await api.post(endpoint);
       alert(res.data.message);
       loadDashboard();
@@ -181,47 +181,47 @@ const DashboardAdvanced: React.FC = () => {
               <span className="text-gray-600">Leads</span>
               <div className="flex items-center gap-2">
                 <div className="w-32 h-2 bg-gray-200 rounded">
-                  <div 
-                    className="h-full bg-blue-500 rounded" 
+                  <div
+                    className="h-full bg-blue-500 rounded"
                     style={{width: `${(stats.customers.leads/stats.customers.total)*100}%`}}
                   ></div>
                 </div>
                 <span className="font-semibold w-12 text-right">{stats.customers.leads}</span>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Prospects</span>
               <div className="flex items-center gap-2">
                 <div className="w-32 h-2 bg-gray-200 rounded">
-                  <div 
-                    className="h-full bg-yellow-500 rounded" 
+                  <div
+                    className="h-full bg-yellow-500 rounded"
                     style={{width: `${(stats.customers.prospects/stats.customers.total)*100}%`}}
                   ></div>
                 </div>
                 <span className="font-semibold w-12 text-right">{stats.customers.prospects}</span>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Clientes</span>
               <div className="flex items-center gap-2">
                 <div className="w-32 h-2 bg-gray-200 rounded">
-                  <div 
-                    className="h-full bg-green-500 rounded" 
+                  <div
+                    className="h-full bg-green-500 rounded"
                     style={{width: `${(stats.customers.clientes/stats.customers.total)*100}%`}}
                   ></div>
                 </div>
                 <span className="font-semibold w-12 text-right">{stats.customers.clientes}</span>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Inativos</span>
               <div className="flex items-center gap-2">
                 <div className="w-32 h-2 bg-gray-200 rounded">
-                  <div 
-                    className="h-full bg-gray-400 rounded" 
+                  <div
+                    className="h-full bg-gray-400 rounded"
                     style={{width: `${(stats.customers.inativos/stats.customers.total)*100}%`}}
                   ></div>
                 </div>
@@ -241,7 +241,7 @@ const DashboardAdvanced: React.FC = () => {
               </div>
               <span className="text-2xl font-bold text-yellow-600">{stats.activities.pending}</span>
             </div>
-            
+
             <div className="flex justify-between items-center p-3 bg-blue-50 rounded">
               <div>
                 <p className="font-semibold text-gray-800">Interações Esta Semana</p>
@@ -265,7 +265,7 @@ const DashboardAdvanced: React.FC = () => {
             <p className="font-semibold">Calcular Scores</p>
             <p className="text-sm text-gray-600">Avaliar todos os leads</p>
           </button>
-          
+
           <button
             onClick={() => runAutomation('convert')}
             className="p-4 border-2 border-green-300 rounded-lg hover:bg-green-50 transition"
@@ -274,7 +274,7 @@ const DashboardAdvanced: React.FC = () => {
             <p className="font-semibold">Converter Hot Leads</p>
             <p className="text-sm text-gray-600">Score >= 70</p>
           </button>
-          
+
           <button
             onClick={() => runAutomation('inactive')}
             className="p-4 border-2 border-yellow-300 rounded-lg hover:bg-yellow-50 transition"
@@ -283,7 +283,7 @@ const DashboardAdvanced: React.FC = () => {
             <p className="font-semibold">Alertar Inativos</p>
             <p className="text-sm text-gray-600">30+ dias sem contato</p>
           </button>
-          
+
           <button
             onClick={() => runAutomation('renewal')}
             className="p-4 border-2 border-purple-300 rounded-lg hover:bg-purple-50 transition"
@@ -301,8 +301,8 @@ const DashboardAdvanced: React.FC = () => {
           <h3 className="text-lg font-semibold mb-4">🔔 Alertas e Lembretes</h3>
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {alerts.map((alert, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`p-3 border-l-4 rounded ${getPriorityColor(alert.priority)}`}
               >
                 <div className="flex justify-between items-start">

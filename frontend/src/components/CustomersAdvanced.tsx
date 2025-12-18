@@ -28,12 +28,12 @@ const CustomersAdvanced: React.FC = () => {
   const [activeTab, setActiveTab] = useState('geral'); // geral, notas, historico, anexos
   const [loadingCNPJ, setLoadingCNPJ] = useState(false);
   const [loadingCEP, setLoadingCEP] = useState(false);
-  
+
   // Estados para filtros
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('todos');
   const [filterCategoria, setFilterCategoria] = useState('todos');
-  
+
   // Estados para notas, interações e anexos
   const [notes, setNotes] = useState<any[]>([]);
   const [interactions, setInteractions] = useState<any[]>([]);
@@ -144,7 +144,7 @@ const CustomersAdvanced: React.FC = () => {
     setSelectedCustomer(customer);
     setShowDetails(true);
     setActiveTab('geral');
-    
+
     // Carregar dados adicionais
     try {
       const [notesData, interactionsData, attachmentsData] = await Promise.all([
@@ -244,7 +244,7 @@ const CustomersAdvanced: React.FC = () => {
 
   const handleAddNote = async () => {
     if (!selectedCustomer || !newNote.trim()) return;
-    
+
     try {
       await createNote({
         customer_id: selectedCustomer.id,
@@ -281,7 +281,7 @@ const CustomersAdvanced: React.FC = () => {
 
   const handleAddInteraction = async () => {
     if (!selectedCustomer || !newInteraction.titulo.trim()) return;
-    
+
     try {
       await createInteraction({
         ...newInteraction,
@@ -304,7 +304,7 @@ const CustomersAdvanced: React.FC = () => {
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selectedCustomer || !e.target.files?.[0]) return;
-    
+
     try {
       const file = e.target.files[0];
       await uploadAttachment(selectedCustomer.id, file);
@@ -338,7 +338,7 @@ const CustomersAdvanced: React.FC = () => {
       c.cnpj || '',
       c.municipio || ''
     ]);
-    
+
     const csv = [headers, ...data].map(row => row.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);

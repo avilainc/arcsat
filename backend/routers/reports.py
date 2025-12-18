@@ -22,13 +22,13 @@ async def export_customers_csv(status: Optional[str] = None):
         query = {}
         if status:
             query["status"] = status
-        
+
         customers = await customers_collection.find(query).to_list(10000)
-        
+
         # Criar CSV em memória
         output = io.StringIO()
         writer = csv.writer(output)
-        
+
         # Cabeçalhos
         headers = [
             'ID', 'Nome', 'Email', 'Telefone', 'Empresa', 'CNPJ', 'Status',
@@ -36,7 +36,7 @@ async def export_customers_csv(status: Optional[str] = None):
             'Valor Contrato', 'Data Cadastro'
         ]
         writer.writerow(headers)
-        
+
         # Dados
         for customer in customers:
             writer.writerow([
@@ -56,10 +56,10 @@ async def export_customers_csv(status: Optional[str] = None):
                 customer.get('valor_contrato', 0),
                 customer.get('created_at', datetime.now()).strftime('%d/%m/%Y')
             ])
-        
+
         csv_content = output.getvalue()
         output.close()
-        
+
         return Response(
             content=csv_content.encode('utf-8-sig'),
             media_type='text/csv',
@@ -78,32 +78,32 @@ async def export_customers_excel(status: Optional[str] = None):
         query = {}
         if status:
             query["status"] = status
-        
+
         customers = await customers_collection.find(query).to_list(10000)
-        
+
         # Criar workbook
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Clientes"
-        
+
         # Estilos
         header_font = Font(bold=True, color="FFFFFF")
         header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         header_alignment = Alignment(horizontal="center", vertical="center")
-        
+
         # Cabeçalhos
         headers = [
             'ID', 'Nome', 'Email', 'Telefone', 'Empresa', 'CNPJ', 'Status',
             'Cidade', 'UF', 'Categoria', 'Origem', 'Responsável', 'Score',
             'Valor Contrato', 'Data Cadastro'
         ]
-        
+
         for col, header in enumerate(headers, start=1):
             cell = ws.cell(row=1, column=col, value=header)
             cell.font = header_font
             cell.fill = header_fill
             cell.alignment = header_alignment
-        
+
         # Dados
         for row, customer in enumerate(customers, start=2):
             ws.cell(row=row, column=1, value=str(customer['_id']))
@@ -121,7 +121,7 @@ async def export_customers_excel(status: Optional[str] = None):
             ws.cell(row=row, column=13, value=customer.get('score', 0))
             ws.cell(row=row, column=14, value=customer.get('valor_contrato', 0))
             ws.cell(row=row, column=15, value=customer.get('created_at', datetime.now()).strftime('%d/%m/%Y'))
-        
+
         # Ajustar largura das colunas
         for col in ws.columns:
             max_length = 0
@@ -134,12 +134,12 @@ async def export_customers_excel(status: Optional[str] = None):
                     pass
             adjusted_width = min(max_length + 2, 50)
             ws.column_dimensions[column].width = adjusted_width
-        
+
         # Salvar em memória
         excel_file = io.BytesIO()
         wb.save(excel_file)
         excel_file.seek(0)
-        
+
         return Response(
             content=excel_file.getvalue(),
             media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -158,7 +158,7 @@ async def export_pipeline_pdf():
         # Buscar dados
         pipeline_stages = ["Prospecção", "Qualificação", "Proposta", "Negociação", "Fechamento"]
         pipeline_data = []
-        
+
         for stage in pipeline_stages:
             deals = await deals_collection.find({"stage": stage, "status": "open"}).to_list(1000)
             total_value = sum(d.get('value', 0) for d in deals)
@@ -167,13 +167,13 @@ async def export_pipeline_pdf():
                 len(deals),
                 f"R$ {total_value:,.2f}"
             ])
-        
+
         # Criar PDF
         pdf_file = io.BytesIO()
         doc = SimpleDocTemplate(pdf_file, pagesize=A4)
         elements = []
         styles = getSampleStyleSheet()
-        
+
         # Título
         title_style = ParagraphStyle(
             'CustomTitle',
@@ -185,7 +185,7 @@ async def export_pipeline_pdf():
         )
         title = Paragraph("Relatório Pipeline de Vendas", title_style)
         elements.append(title)
-        
+
         # Data
         date_style = ParagraphStyle(
             'DateStyle',
@@ -197,7 +197,7 @@ async def export_pipeline_pdf():
         date_text = Paragraph(f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M')}", date_style)
         elements.append(date_text)
         elements.append(Spacer(1, 20))
-        
+
         # Tabela
         table_data = [['Estágio', 'Quantidade', 'Valor Total']] + pipeline_data
         table = Table(table_data, colWidths=[2*inch, 1.5*inch, 2*inch])
@@ -212,12 +212,12 @@ async def export_pipeline_pdf():
             ('GRID', (0, 0), (-1, -1), 1, colors.black)
         ]))
         elements.append(table)
-        
+
         # Stats adicionais
         elements.append(Spacer(1, 30))
         total_deals = sum(row[1] for row in pipeline_data)
         total_value = sum(float(row[2].replace('R$ ', '').replace(',', '')) for row in pipeline_data)
-        
+
         stats_text = f"""
         <b>Resumo Geral:</b><br/>
         Total de Deals Abertos: {total_deals}<br/>
@@ -225,10 +225,10 @@ async def export_pipeline_pdf():
         """
         stats_para = Paragraph(stats_text, styles['Normal'])
         elements.append(stats_para)
-        
+
         doc.build(elements)
         pdf_file.seek(0)
-        
+
         return Response(
             content=pdf_file.getvalue(),
             media_type='application/pdf',
@@ -249,7 +249,7 @@ async def export_activities_report(
     """Relatório de atividades com filtros"""
     try:
         query = {}
-        
+
         if start_date:
             query["created_at"] = {"$gte": datetime.fromisoformat(start_date)}
         if end_date:
@@ -259,21 +259,21 @@ async def export_activities_report(
                 query["created_at"] = {"$lte": datetime.fromisoformat(end_date)}
         if status:
             query["status"] = status
-        
+
         activities = await activities_collection.find(query).to_list(10000)
-        
+
         # Estatísticas
         total = len(activities)
         by_type = {}
         by_status = {}
-        
+
         for activity in activities:
             act_type = activity.get('activity_type', 'outros')
             act_status = activity.get('status', 'unknown')
-            
+
             by_type[act_type] = by_type.get(act_type, 0) + 1
             by_status[act_status] = by_status.get(act_status, 0) + 1
-        
+
         return {
             "period": {
                 "start": start_date or "início",
@@ -305,23 +305,23 @@ async def export_interactions_report(customer_id: Optional[str] = None, days: in
     try:
         start_date = datetime.now() - timedelta(days=days)
         query = {"created_at": {"$gte": start_date}}
-        
+
         if customer_id:
             query["customer_id"] = customer_id
-        
+
         interactions = await interactions_collection.find(query).sort("created_at", -1).to_list(10000)
-        
+
         # Estatísticas
         by_type = {}
         by_result = {}
-        
+
         for interaction in interactions:
             int_type = interaction.get('tipo', 'outros')
             int_result = interaction.get('resultado', 'pendente')
-            
+
             by_type[int_type] = by_type.get(int_type, 0) + 1
             by_result[int_result] = by_result.get(int_result, 0) + 1
-        
+
         return {
             "period_days": days,
             "total_interactions": len(interactions),
@@ -353,12 +353,12 @@ async def conversion_funnel_report():
         leads = await customers_collection.count_documents({"status": "lead"})
         prospects = await customers_collection.count_documents({"status": "prospect"})
         clientes = await customers_collection.count_documents({"status": "cliente"})
-        
+
         # Calcular conversões
         lead_to_prospect = (prospects / leads * 100) if leads > 0 else 0
         prospect_to_client = (clientes / prospects * 100) if prospects > 0 else 0
         lead_to_client = (clientes / leads * 100) if leads > 0 else 0
-        
+
         # Tempo médio de conversão
         pipeline = [
             {"$match": {"status": "cliente"}},
@@ -377,7 +377,7 @@ async def conversion_funnel_report():
         ]
         conversion_time = await customers_collection.aggregate(pipeline).to_list(1)
         avg_conversion_days = conversion_time[0]["avg_days"] if conversion_time else 0
-        
+
         return {
             "funnel_stages": [
                 {

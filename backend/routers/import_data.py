@@ -23,30 +23,30 @@ async def import_customers_csv(file: UploadFile = File(...)):
     """Importar clientes de arquivo CSV"""
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Arquivo deve ser CSV")
-    
+
     try:
         # Ler arquivo
         contents = await file.read()
         decoded = contents.decode('utf-8-sig')
         csv_file = io.StringIO(decoded)
         reader = csv.DictReader(csv_file)
-        
+
         imported = 0
         errors = []
-        
+
         for row_num, row in enumerate(reader, start=2):
             try:
                 # Validar campos obrigatórios
                 if not row.get('name') or not row.get('email'):
                     errors.append(f"Linha {row_num}: Nome e email são obrigatórios")
                     continue
-                
+
                 # Verificar se já existe
                 existing = await customers_collection.find_one({"email": row['email']})
                 if existing:
                     errors.append(f"Linha {row_num}: Cliente com email {row['email']} já existe")
                     continue
-                
+
                 # Criar cliente
                 customer = {
                     "name": row.get('name', ''),
@@ -66,19 +66,19 @@ async def import_customers_csv(file: UploadFile = File(...)):
                     "created_at": datetime.now(),
                     "updated_at": datetime.now()
                 }
-                
+
                 await customers_collection.insert_one(customer)
                 imported += 1
-                
+
             except Exception as e:
                 errors.append(f"Linha {row_num}: {str(e)}")
-        
+
         return {
             "message": f"{imported} clientes importados com sucesso",
             "imported": imported,
             "errors": errors
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao importar: {str(e)}")
 
@@ -89,7 +89,7 @@ async def import_customers_bulk(customers: List[CustomerImport]):
     try:
         imported = 0
         errors = []
-        
+
         for idx, customer_data in enumerate(customers):
             try:
                 # Verificar se já existe
@@ -97,24 +97,24 @@ async def import_customers_bulk(customers: List[CustomerImport]):
                 if existing:
                     errors.append(f"Cliente {idx+1}: Email {customer_data.email} já existe")
                     continue
-                
+
                 customer_dict = customer_data.model_dump()
                 customer_dict["created_at"] = datetime.now()
                 customer_dict["updated_at"] = datetime.now()
-                
+
                 await customers_collection.insert_one(customer_dict)
                 imported += 1
-                
+
             except Exception as e:
                 errors.append(f"Cliente {idx+1}: {str(e)}")
-        
+
         return {
             "message": f"{imported} clientes importados com sucesso",
             "imported": imported,
             "total": len(customers),
             "errors": errors
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao importar: {str(e)}")
 
@@ -125,7 +125,7 @@ async def download_import_template():
     try:
         output = io.StringIO()
         writer = csv.writer(output)
-        
+
         # Cabeçalhos
         headers = [
             'name', 'email', 'phone', 'company', 'cnpj', 'status',
@@ -133,7 +133,7 @@ async def download_import_template():
             'cep', 'municipio', 'uf', 'observacoes'
         ]
         writer.writerow(headers)
-        
+
         # Exemplo
         example = [
             'João Silva',
@@ -152,10 +152,10 @@ async def download_import_template():
             'Cliente potencial'
         ]
         writer.writerow(example)
-        
+
         csv_content = output.getvalue()
         output.close()
-        
+
         from fastapi.responses import Response
         return Response(
             content=csv_content.encode('utf-8-sig'),
@@ -164,7 +164,7 @@ async def download_import_template():
                 'Content-Disposition': 'attachment; filename=template_importacao_clientes.csv'
             }
         )
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao gerar template: {str(e)}")
 
@@ -174,19 +174,19 @@ async def validate_csv_before_import(file: UploadFile = File(...)):
     """Validar CSV antes de importar"""
     if not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail="Arquivo deve ser CSV")
-    
+
     try:
         contents = await file.read()
         decoded = contents.decode('utf-8-sig')
         csv_file = io.StringIO(decoded)
         reader = csv.DictReader(csv_file)
-        
+
         valid_rows = 0
         invalid_rows = []
         duplicate_emails = []
-        
+
         required_fields = ['name', 'email']
-        
+
         for row_num, row in enumerate(reader, start=2):
             # Verificar campos obrigatórios
             missing_fields = [field for field in required_fields if not row.get(field)]
@@ -196,7 +196,7 @@ async def validate_csv_before_import(file: UploadFile = File(...)):
                     "error": f"Campos obrigatórios faltando: {', '.join(missing_fields)}"
                 })
                 continue
-            
+
             # Verificar email duplicado no banco
             existing = await customers_collection.find_one({"email": row['email']})
             if existing:
@@ -205,9 +205,9 @@ async def validate_csv_before_import(file: UploadFile = File(...)):
                     "email": row['email']
                 })
                 continue
-            
+
             valid_rows += 1
-        
+
         return {
             "valid_rows": valid_rows,
             "invalid_rows": len(invalid_rows),
@@ -218,6 +218,6 @@ async def validate_csv_before_import(file: UploadFile = File(...)):
             },
             "can_import": len(invalid_rows) == 0 and len(duplicate_emails) == 0
         }
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao validar: {str(e)}")

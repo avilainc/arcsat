@@ -47,10 +47,10 @@ async def create_task(task: Task):
     task_dict["created_at"] = datetime.now()
     task_dict["updated_at"] = datetime.now()
     task_dict["completed_at"] = None
-    
+
     result = await tasks_collection.insert_one(task_dict)
     task_dict["_id"] = str(result.inserted_id)
-    
+
     return {
         "message": "Tarefa criada com sucesso",
         "task": task_dict
@@ -69,7 +69,7 @@ async def list_tasks(
 ):
     """Listar tarefas com filtros"""
     query = {}
-    
+
     if status:
         query["status"] = status
     if priority:
@@ -83,19 +83,19 @@ async def list_tasks(
     if overdue:
         query["due_date"] = {"$lt": datetime.now()}
         query["status"] = {"$ne": "done"}
-    
+
     # Paginação
     skip = (page - 1) * per_page
-    
+
     cursor = tasks_collection.find(query).sort("created_at", -1).skip(skip).limit(per_page)
     tasks = await cursor.to_list(length=per_page)
-    
+
     total = await tasks_collection.count_documents(query)
-    
+
     # Converter ObjectId para string
     for task in tasks:
         task["_id"] = str(task["_id"])
-    
+
     return {
         "tasks": tasks,
         "total": total,
@@ -110,7 +110,7 @@ async def get_task(task_id: str):
     task = await tasks_collection.find_one({"_id": ObjectId(task_id)})
     if not task:
         raise HTTPException(status_code=404, detail="Tarefa não encontrada")
-    
+
     task["_id"] = str(task["_id"])
     return task
 
@@ -118,27 +118,27 @@ async def get_task(task_id: str):
 async def update_task(task_id: str, task_update: TaskUpdate):
     """Atualizar tarefa"""
     update_data = {k: v for k, v in task_update.model_dump().items() if v is not None}
-    
+
     if not update_data:
         raise HTTPException(status_code=400, detail="Nenhum dado para atualizar")
-    
+
     update_data["updated_at"] = datetime.now()
-    
+
     # Se marcando como done, adicionar data de conclusão
     if update_data.get("status") == "done":
         update_data["completed_at"] = datetime.now()
-    
+
     result = await tasks_collection.update_one(
         {"_id": ObjectId(task_id)},
         {"$set": update_data}
     )
-    
+
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Tarefa não encontrada")
-    
+
     updated_task = await tasks_collection.find_one({"_id": ObjectId(task_id)})
     updated_task["_id"] = str(updated_task["_id"])
-    
+
     return {
         "message": "Tarefa atualizada com sucesso",
         "task": updated_task
@@ -148,10 +148,10 @@ async def update_task(task_id: str, task_update: TaskUpdate):
 async def delete_task(task_id: str):
     """Deletar tarefa"""
     result = await tasks_collection.delete_one({"_id": ObjectId(task_id)})
-    
+
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Tarefa não encontrada")
-    
+
     return {"message": "Tarefa deletada com sucesso"}
 
 @router.post("/tasks/{task_id}/checklist")
@@ -160,15 +160,15 @@ async def add_checklist_item(task_id: str, item: ChecklistItem):
     task = await tasks_collection.find_one({"_id": ObjectId(task_id)})
     if not task:
         raise HTTPException(status_code=404, detail="Tarefa não encontrada")
-    
+
     checklist = task.get("checklist", [])
     checklist.append(item.model_dump())
-    
+
     await tasks_collection.update_one(
         {"_id": ObjectId(task_id)},
         {"$set": {"checklist": checklist, "updated_at": datetime.now()}}
     )
-    
+
     return {
         "message": "Item adicionado ao checklist",
         "checklist": checklist
@@ -180,18 +180,18 @@ async def toggle_checklist_item(task_id: str, item_index: int):
     task = await tasks_collection.find_one({"_id": ObjectId(task_id)})
     if not task:
         raise HTTPException(status_code=404, detail="Tarefa não encontrada")
-    
+
     checklist = task.get("checklist", [])
     if item_index < 0 or item_index >= len(checklist):
         raise HTTPException(status_code=400, detail="Índice inválido")
-    
+
     checklist[item_index]["completed"] = not checklist[item_index].get("completed", False)
-    
+
     await tasks_collection.update_one(
         {"_id": ObjectId(task_id)},
         {"$set": {"checklist": checklist, "updated_at": datetime.now()}}
     )
-    
+
     return {
         "message": "Item do checklist atualizado",
         "checklist": checklist
@@ -203,18 +203,18 @@ async def remove_checklist_item(task_id: str, item_index: int):
     task = await tasks_collection.find_one({"_id": ObjectId(task_id)})
     if not task:
         raise HTTPException(status_code=404, detail="Tarefa não encontrada")
-    
+
     checklist = task.get("checklist", [])
     if item_index < 0 or item_index >= len(checklist):
         raise HTTPException(status_code=400, detail="Índice inválido")
-    
+
     checklist.pop(item_index)
-    
+
     await tasks_collection.update_one(
         {"_id": ObjectId(task_id)},
         {"$set": {"checklist": checklist, "updated_at": datetime.now()}}
     )
-    
+
     return {
         "message": "Item removido do checklist",
         "checklist": checklist
@@ -265,9 +265,9 @@ async def get_tasks_summary():
             }
         }
     ]
-    
+
     result = await tasks_collection.aggregate(pipeline).to_list(length=1)
-    
+
     if not result:
         return {
             "by_status": {},
@@ -276,9 +276,9 @@ async def get_tasks_summary():
             "due_today": 0,
             "total_hours": {"estimated": 0, "actual": 0}
         }
-    
+
     data = result[0]
-    
+
     return {
         "by_status": {item["_id"]: item["count"] for item in data.get("by_status", [])},
         "by_priority": {item["_id"]: item["count"] for item in data.get("by_priority", [])},
@@ -293,19 +293,19 @@ async def get_tasks_kanban(assigned_to: Optional[str] = None):
     query = {}
     if assigned_to:
         query["assigned_to"] = assigned_to
-    
+
     cursor = tasks_collection.find(query).sort("priority", -1)
     tasks = await cursor.to_list(length=1000)
-    
+
     # Converter ObjectId para string
     for task in tasks:
         task["_id"] = str(task["_id"])
-    
+
     # Organizar por status
     kanban = {
         "todo": [t for t in tasks if t.get("status") == "todo"],
         "in_progress": [t for t in tasks if t.get("status") == "in_progress"],
         "done": [t for t in tasks if t.get("status") == "done"]
     }
-    
+
     return kanban

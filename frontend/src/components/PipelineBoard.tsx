@@ -183,7 +183,7 @@ const PipelineBoard: React.FC = () => {
                 >
                   <h4 className="font-semibold text-gray-800 mb-2">{deal.title}</h4>
                   <p className="text-sm text-gray-600 mb-2">{deal.customer_name}</p>
-                  
+
                   <div className="flex justify-between items-center mb-3">
                     <span className="text-green-600 font-bold">
                       R$ {deal.value.toLocaleString('pt-BR')}
