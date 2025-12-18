@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from routers import customers, deals, activities, contacts, cnpj
+from routers import customers, deals, activities, contacts, cnpj, cep, customer_extras
 from database import client
 import os
 from dotenv import load_dotenv
@@ -49,6 +49,8 @@ app.include_router(deals.router, prefix="/api/deals", tags=["deals"])
 app.include_router(activities.router, prefix="/api/activities", tags=["activities"])
 app.include_router(contacts.router, prefix="/api/contacts", tags=["contacts"])
 app.include_router(cnpj.router, prefix="/api", tags=["cnpj"])
+app.include_router(cep.router, prefix="/api", tags=["cep"])
+app.include_router(customer_extras.router, prefix="/api", tags=["customer-extras"])
 
 @app.get("/")
 async def read_root():

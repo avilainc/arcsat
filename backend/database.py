@@ -19,6 +19,9 @@ customers_collection = database.get_collection("customers")
 deals_collection = database.get_collection("deals")
 activities_collection = database.get_collection("activities")
 contacts_collection = database.get_collection("contacts")
+attachments_collection = database.get_collection("attachments")
+interactions_collection = database.get_collection("interactions")
+notes_collection = database.get_collection("notes")
 
 # Dependência para obter o database
 async def get_database():
