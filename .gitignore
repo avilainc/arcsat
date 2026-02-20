@@ -1,14 +1,38 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
 # Rust
 target/
 **/*.rs.bk
 *.pdb
 Cargo.lock
 
+# Python Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
 # Database
 *.db
 *.db-shm
 *.db-wal
 database/*.db
+crm.db
+*.sqlite3
+
+# Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
 
 # IDEs
 .vscode/
@@ -25,16 +49,9 @@ Thumbs.db
 # Logs
 *.log
 
-# Environment
-.env
-.env.local
-
 # WASM build
 pkg/
 wasm-pack.log
-
-# Node
-node_modules/
 
 # Backup
 *.bak
