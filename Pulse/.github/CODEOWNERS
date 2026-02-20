@@ -1,0 +1,4 @@
+* @avilaops/pulse-team
+*.html @avilaops/frontend-team
+*.md @avilaops/docs-team
+.github/ @avilaops/devops-team

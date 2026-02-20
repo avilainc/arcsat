@@ -1,0 +1,30 @@
+{
+    "name": "pulse",
+    "version": "1.0.0",
+    "description": "Avila Pulse - Executive Telemetry Dashboard",
+    "main": "index.html",
+    "scripts": {
+        "dev": "http-server . -p 8080 -o",
+        "lint": "htmlhint '*.html' && prettier --check '*.html' '*.md'",
+        "format": "prettier --write '*.html' '*.md'",
+        "test": "npm run lint"
+    },
+    "keywords": [
+        "dashboard",
+        "telemetry",
+        "charts",
+        "analytics"
+    ],
+    "author": "Avila Inc",
+    "license": "MIT",
+    "devDependencies": {
+        "htmlhint": "^1.1.4",
+        "prettier": "^3.1.0",
+        "http-server": "^14.1.1",
+        "eslint": "^8.55.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/avilaops/Pulse"
+    }
+}

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Agentes IA do Avila Pulse - Inteligência artificial para analytics, previsões e insights automatizados em tempo real.">
+    <title>Agentes IA - Avila Pulse</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+
+    <!-- Iconoir Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0A84FF;
+            --primary-dark: #0071E3;
+            --secondary: #BF5AF2;
+            --accent: #FF375F;
+            --gold: #FFD60A;
+            --dark: #000000;
+            --dark-light: #1D1D1F;
+            --text: #F5F5F7;
+            --text-muted: #98989D;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: var(--text);
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(191, 90, 242, 0.15), transparent);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -200px;
+            left: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.15), transparent);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(-10px) translateX(-10px); }
+            75% { transform: translateY(-30px) translateX(5px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Agents Grid */
+        .agents-section {
+            padding: 4rem 2rem 6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(10, 132, 255, 0.5);
+            box-shadow: 0 20px 60px rgba(10, 132, 255, 0.3);
+        }
+
+        .agent-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .agent-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .agent-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .agent-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .agent-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tag {
+            background: rgba(10, 132, 255, 0.1);
+            color: var(--primary);
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(10, 132, 255, 0.3);
+        }
+
+        .agent-status {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-beta {
+            background: rgba(234, 179, 8, 0.15);
+            color: #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 11, 13, 0.95);
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="/" class="logo">
+                <span>🤖</span>
+                <span>Agentes IA Pulse</span>
+            </a>
+            <a href="/" class="back-link">
+                <i class="iconoir-arrow-left"></i>
+                Voltar ao Pulse
+            </a>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">Agentes de IA do Pulse</h1>
+            <p class="hero-subtitle">
+                Inteligência artificial especializada em analytics, previsões e insights automatizados para sua
+                telemetria
+            </p>
+        </div>
+    </section>
+
+    <!-- Agents Grid -->
+    <section class="agents-section">
+        <div class="container">
+            <div class="agents-grid">
+                <!-- Analytics Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">📊</span>
+                    <h3 class="agent-name">Analytics AI</h3>
+                    <p class="agent-description">
+                        Analisa padrões em tempo real, identifica tendências e gera insights acionáveis automaticamente
+                        a partir de suas métricas consolidadas.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">Machine Learning</span>
+                        <span class="tag">Pattern Recognition</span>
+                        <span class="tag">Insights</span>
+                    </div>
+                    <span class="agent-status status-active">● Ativo</span>
+                </div>
+
+                <!-- Forecasting Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">🔮</span>
+                    <h3 class="agent-name">Forecasting AI</h3>
+                    <p class="agent-description">
+                        Prevê comportamentos futuros com alta precisão usando modelos de séries temporais e deep
+                        learning para antecipar tendências.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">Time Series</span>
+                        <span class="tag">Predictions</span>
+                        <span class="tag">Deep Learning</span>
+                    </div>
+                    <span class="agent-status status-active">● Ativo</span>
+                </div>
+
+                <!-- Anomaly Detection Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">🚨</span>
+                    <h3 class="agent-name">Anomaly Detector</h3>
+                    <p class="agent-description">
+                        Detecta anomalias e outliers em suas métricas automaticamente, alertando sobre comportamentos
+                        inesperados antes que se tornem problemas.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">Anomaly Detection</span>
+                        <span class="tag">Alerts</span>
+                        <span class="tag">Monitoring</span>
+                    </div>
+                    <span class="agent-status status-active">● Ativo</span>
+                </div>
+
+                <!-- Optimization Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">⚡</span>
+                    <h3 class="agent-name">Optimization AI</h3>
+                    <p class="agent-description">
+                        Sugere otimizações para seus processos e recursos baseando-se em análise histórica e simulações
+                        de cenários futuros.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">Optimization</span>
+                        <span class="tag">Simulations</span>
+                        <span class="tag">Recommendations</span>
+                    </div>
+                    <span class="agent-status status-beta">● Beta</span>
+                </div>
+
+                <!-- Report Generator Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">📄</span>
+                    <h3 class="agent-name">Report Generator</h3>
+                    <p class="agent-description">
+                        Gera relatórios executivos automatizados com visualizações personalizadas, resumos inteligentes
+                        e recomendações estratégicas.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">NLP</span>
+                        <span class="tag">Automation</span>
+                        <span class="tag">Visualization</span>
+                    </div>
+                    <span class="agent-status status-active">● Ativo</span>
+                </div>
+
+                <!-- Query Assistant Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">💬</span>
+                    <h3 class="agent-name">Query Assistant</h3>
+                    <p class="agent-description">
+                        Interface conversacional para consultar suas métricas usando linguagem natural. Responde
+                        perguntas complexas sobre seus dados instantaneamente.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">NLP</span>
+                        <span class="tag">Conversational AI</span>
+                        <span class="tag">Data Query</span>
+                    </div>
+                    <span class="agent-status status-beta">● Beta</span>
+                </div>
+
+                <!-- Alert Manager Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">🔔</span>
+                    <h3 class="agent-name">Smart Alert Manager</h3>
+                    <p class="agent-description">
+                        Gerencia alertas inteligentemente, priorizando notificações críticas e reduzindo ruído com
+                        machine learning adaptativo.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">Alert Management</span>
+                        <span class="tag">Prioritization</span>
+                        <span class="tag">Noise Reduction</span>
+                    </div>
+                    <span class="agent-status status-active">● Ativo</span>
+                </div>
+
+                <!-- Capacity Planner Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">📈</span>
+                    <h3 class="agent-name">Capacity Planner</h3>
+                    <p class="agent-description">
+                        Prevê necessidades futuras de capacidade e recursos, ajudando no planejamento estratégico e
+                        otimização de custos.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">Capacity Planning</span>
+                        <span class="tag">Resource Management</span>
+                        <span class="tag">Cost Optimization</span>
+                    </div>
+                    <span class="agent-status status-beta">● Beta</span>
+                </div>
+
+                <!-- Integration Orchestrator Agent -->
+                <div class="agent-card">
+                    <span class="agent-icon">🔗</span>
+                    <h3 class="agent-name">Integration Orchestrator</h3>
+                    <p class="agent-description">
+                        Orquestra automaticamente a coleta e sincronização de dados entre diferentes fontes do
+                        ecossistema Avila.
+                    </p>
+                    <div class="agent-tags">
+                        <span class="tag">Integration</span>
+                        <span class="tag">Orchestration</span>
+                        <span class="tag">Data Sync</span>
+                    </div>
+                    <span class="agent-status status-active">● Ativo</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Avila Inc. Todos os direitos reservados. | <a href="https://portal.avila.inc">Portal
+                    Avila</a> | <a href="/">Voltar ao Pulse</a> <span style="opacity: 0.3; font-size: 0.8em;">|</span> <a href="https://dashboard.tawk.to/#/dashboard/694f28753169ac197f3faf8d" target="_blank" style="color: #48484A; text-decoration: none; opacity: 0.5; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">·</a></p>
+        </div>
+    </footer>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/694f28753169ac197f3faf8d/1jdejc2qr';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
+</body>
+
+</html>

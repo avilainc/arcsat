@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Avila Pulse - Hub de telemetria executiva com dashboards em tempo real, métricas consolidadas e analytics inteligentes para decisões baseadas em dados.">
+    <meta name="keywords"
+        content="analytics, telemetria, dashboard, métricas, business intelligence, data visualization">
+    <meta name="author" content="Avila Inc">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Avila Pulse - Telemetria Executiva">
+    <meta property="og:description"
+        content="Dashboards em tempo real e métricas consolidadas para decisões inteligentes">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://avilaops.github.io/Pulse">
+    <meta property="og:image" content="https://avilaops.github.io/Pulse/og-image.svg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Avila Pulse - Telemetria Executiva">
+    <meta name="twitter:description" content="Dashboards em tempo real e métricas consolidadas">
+    <meta name="twitter:image" content="https://avilaops.github.io/Pulse/og-image.svg">
+
+    <title>Avila Pulse - Telemetria Executiva</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <!-- Iconoir Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #007AFF;
+            --primary-dark: #0056b3;
+            --secondary: #5856D6;
+            --accent: #FF2D55;
+            --gold: #FFD60A;
+            --dark: #FFFFFF;
+            --dark-light: #F5F5F7;
+            --text: #1D1D1F;
+            --text-muted: #6E6E73;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            color: var(--text);
+            line-height: 1.5;
+            overflow-x: hidden;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: #1D1D1F;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 0.4rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 2rem 6rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1D1D1F;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.75rem;
+            color: #6E6E73;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            line-height: 1.4;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .primary-btn {
+            background: #007AFF;
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 980px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.0625rem;
+            transition: all 0.2s ease;
+            display: inline-block;
+            border: none;
+        }
+
+        .primary-btn:hover {
+            background: #0056b3;
+            transform: scale(1.02);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: #007AFF;
+            padding: 0.875rem 2rem;
+            border-radius: 980px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.0625rem;
+            border: 2px solid #007AFF;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, transparent, rgba(102, 126, 234, 0.05));
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(26, 29, 38, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .feature-description {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-card {
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 30% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .cta-description {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 11, 13, 0.95);
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            color: var(--text-muted);
+        }
+
+        /* Live Dashboard Preview */
+        .dashboard-preview {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(10, 11, 13, 0.8), rgba(26, 29, 38, 0.8));
+        }
+
+        .dashboard-mockup {
+            background: rgba(26, 29, 38, 0.8);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto 0;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .dashboard-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red {
+            background: #ff5f56;
+        }
+
+        .dot-yellow {
+            background: #ffbd2e;
+        }
+
+        .dot-green {
+            background: #27c93f;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metric-box {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .metric-box:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Use Cases */
+        .use-cases {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, rgba(102, 126, 234, 0.05), transparent);
+        }
+
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .use-case-card {
+            background: rgba(26, 29, 38, 0.5);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .use-case-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .use-case-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .use-case-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .use-case-desc {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 11, 13, 0.98);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                border-top: 1px solid rgba(102, 126, 234, 0.2);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="/" class="logo">
+                <span class="logo-icon">📊</span>
+                <span>Avila Pulse</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="/dashboard.html">Dashboard Live</a></li>
+                <li><a href="#use-cases">Casos de Uso</a></li>
+                <li><a href="#stats">Métricas</a></li>
+                <li><a href="/AI">Agentes IA</a></li>
+                <li><a href="https://portal.avila.inc" class="cta-button">Portal</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <canvas id="particles-canvas"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title">Telemetria Executiva em Tempo Real</h1>
+            <p class="hero-subtitle">
+                Dashboards inteligentes, métricas consolidadas e analytics avançados para decisões baseadas em dados
+            </p>
+            <div class="hero-buttons">
+                <a href="/dashboard.html" class="primary-btn">Ver Dashboard Interativo</a>
+                <a href="/AI" class="secondary-btn">Agentes IA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title reveal">Recursos Poderosos</h2>
+                <p class="section-subtitle reveal">Tudo que você precisa para monitorar e otimizar seu negócio</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Dashboards em Tempo Real</h3>
+                    <p class="feature-description">
+                        Visualize métricas críticas atualizadas instantaneamente com gráficos interativos e
+                        customizáveis
+                    </p>
+                </div>
+
+                <div class="feature-card reveal">
+                    <span class="feature-icon">📈</span>
+                    <h3 class="feature-title">Métricas Consolidadas</h3>
+                    <p class="feature-description">
+                        Agregue dados de múltiplas fontes em um único painel executivo com KPIs estratégicos
+                    </p>
+                </div>
+
+                <div class="feature-card reveal">
+                    <span class="feature-icon">🔄</span>
+                    <h3 class="feature-title">Event Streaming</h3>
+                    <p class="feature-description">
+                        Capture e processe eventos em tempo real com latência mínima e alta disponibilidade
+                    </p>
+                </div>
+
+                <div class="feature-card reveal">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="feature-title">Analytics Executivos</h3>
+                    <p class="feature-description">
+                        Análises avançadas com insights acionáveis para tomada de decisão estratégica
+                    </p>
+                </div>
+
+                <div class="feature-card reveal">
+                    <span class="feature-icon">🔔</span>
+                    <h3 class="feature-title">Alertas Inteligentes</h3>
+                    <p class="feature-description">
+                        Notificações automáticas baseadas em thresholds personalizáveis e machine learning
+                    </p>
+                </div>
+
+                <div class="feature-card reveal">
+                    <span class="feature-icon">🔗</span>
+                    <h3 class="feature-title">Integrações Nativas</h3>
+                    <p class="feature-description">
+                        Conecte-se facilmente com todos os produtos do ecossistema Avila via API e WebSocket
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Dashboard Preview -->
+    <section id="dashboard" class="dashboard-preview">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title reveal">Dashboard ao Vivo</h2>
+                <p class="section-subtitle reveal">Visualize métricas em tempo real com nossa interface intuitiva</p>
+            </div>
+
+            <div class="dashboard-mockup reveal">
+                <div class="dashboard-header">
+                    <span class="dashboard-dot dot-red"></span>
+                    <span class="dashboard-dot dot-yellow"></span>
+                    <span class="dashboard-dot dot-green"></span>
+                </div>
+                <div class="dashboard-content">
+                    <div class="metric-box">
+                        <div class="metric-value" id="active-users">0</div>
+                        <div class="metric-label">Usuários Ativos</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value" id="requests-per-sec">0</div>
+                        <div class="metric-label">Requests/s</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value" id="response-time">0ms</div>
+                        <div class="metric-label">Tempo de Resposta</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value" id="error-rate">0%</div>
+                        <div class="metric-label">Taxa de Erro</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="use-cases">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title reveal">Casos de Uso</h2>
+                <p class="section-subtitle reveal">Pulse se adapta a diferentes necessidades e setores</p>
+            </div>
+
+            <div class="use-case-grid">
+                <div class="use-case-card reveal">
+                    <div class="use-case-icon">🏢</div>
+                    <h3 class="use-case-title">Empresas SaaS</h3>
+                    <p class="use-case-desc">
+                        Monitore saúde de aplicações, performance de APIs e satisfação de usuários em tempo real.
+                    </p>
+                </div>
+
+                <div class="use-case-card reveal">
+                    <div class="use-case-icon">🛒</div>
+                    <h3 class="use-case-title">E-commerce</h3>
+                    <p class="use-case-desc">
+                        Acompanhe vendas, conversões, abandono de carrinho e comportamento de compra instantaneamente.
+                    </p>
+                </div>
+
+                <div class="use-case-card reveal">
+                    <div class="use-case-icon">📱</div>
+                    <h3 class="use-case-title">Apps Mobile</h3>
+                    <p class="use-case-desc">
+                        Telemetria completa de uso, crashes, performance e engajamento dos seus aplicativos móveis.
+                    </p>
+                </div>
+
+                <div class="use-case-card reveal">
+                    <div class="use-case-icon">🏦</div>
+                    <h3 class="use-case-title">Fintech</h3>
+                    <p class="use-case-desc">
+                        Monitore transações, detecção de fraudes, compliance e métricas financeiras críticas 24/7.
+                    </p>
+                </div>
+
+                <div class="use-case-card reveal">
+                    <div class="use-case-icon">🎮</div>
+                    <h3 class="use-case-title">Gaming</h3>
+                    <p class="use-case-desc">
+                        Analytics de jogadores, economia do jogo, performance de servidores e eventos em tempo real.
+                    </p>
+                </div>
+
+                <div class="use-case-card reveal">
+                    <div class="use-case-icon">🏥</div>
+                    <h3 class="use-case-title">HealthTech</h3>
+                    <p class="use-case-desc">
+                        Monitoramento de dispositivos médicos, telemetria de pacientes e alertas críticos de saúde.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="stats">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title reveal">Números que Impressionam</h2>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card reveal">
+                    <div class="stat-number">
+                        < 50ms</div>
+                            <div class="stat-label">Latência Média</div>
+                    </div>
+
+                    <div class="stat-card reveal">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">Uptime SLA</div>
+                    </div>
+
+                    <div class="stat-card reveal">
+                        <div class="stat-number">1M+</div>
+                        <div class="stat-label">Events/Segundo</div>
+                    </div>
+
+                    <div class="stat-card reveal">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Monitoramento</div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title reveal">Pronto para Transformar Seus Dados?</h2>
+            <p class="cta-description reveal">
+                Junte-se ao ecossistema Avila e tenha acesso a telemetria de nível empresarial
+            </p>
+            <div class="hero-buttons">
+                <a href="/dashboard.html" class="primary-btn reveal">Ver Dashboard ao Vivo</a>
+                <a href="/AI" class="secondary-btn reveal">Explorar Agentes IA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>📊 Avila Pulse</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">
+                    Hub de telemetria executiva com dashboards em tempo real e analytics avançados.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Produtos</h3>
+                <ul>
+                    <li><a href="https://portal.avila.inc">Portal Avila</a></li>
+                    <li><a href="https://vault.avila.inc">Avila Vault</a></li>
+                    <li><a href="https://on.avila.inc">On Platform</a></li>
+                    <li><a href="https://darwin.avila.inc">Darwin</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Recursos</h3>
+                <ul>
+                    <li><a href="/AI">Agentes IA</a></li>
+                    <li><a href="https://pulse.avila.inc/docs">Documentação</a></li>
+                    <li><a href="https://pulse.avila.inc/api">API Reference</a></li>
+                    <li><a href="https://status.avila.inc">Status</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Empresa</h3>
+                <ul>
+                    <li><a href="https://avila.inc">Sobre</a></li>
+                    <li><a href="https://avila.inc/contact">Contato</a></li>
+                    <li><a href="https://github.com/avilaops">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Avila Inc. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileToggle?.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileToggle.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileToggle?.classList.remove('active');
+            });
+        });
+
+        // Particles animation
+        const canvas = document.getElementById('particles-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            const particles = [];
+            const particleCount = 50;
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = Math.random() * 0.5 - 0.25;
+                    this.speedY = Math.random() * 0.5 - 0.25;
+                    this.opacity = Math.random() * 0.5 + 0.2;
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.y > canvas.height) this.y = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                }
+
+                draw() {
+                    ctx.fillStyle = `rgba(102, 126, 234, ${this.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles();
+
+            window.addEventListener('resize', () => {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            });
+        }
+
+        // Live dashboard metrics animation
+        function animateValue(id, start, end, duration, suffix = '') {
+            const element = document.getElementById(id);
+            if (!element) return;
+
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current) + suffix;
+            }, 16);
+        }
+
+        // Observe dashboard section
+        const dashboardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateValue('active-users', 0, 12847, 2000);
+                    animateValue('requests-per-sec', 0, 3542, 2000);
+                    animateValue('response-time', 0, 45, 2000, 'ms');
+                    animateValue('error-rate', 0, 0.03, 2000, '%');
+                    dashboardObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        const dashboardSection = document.querySelector('.dashboard-preview');
+        if (dashboardSection) {
+            dashboardObserver.observe(dashboardSection);
+        }
+
+        // Reveal on scroll animation
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            revealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                if (elementTop < windowHeight * 0.85) {
+                    element.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

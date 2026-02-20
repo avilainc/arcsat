@@ -1,0 +1,25 @@
+# Normalize text files to LF to keep diffs clean across OSes
+* text=auto eol=lf
+
+# Treat specific file types
+*.rs text
+*.py text
+*.ts text
+*.js text
+*.css text
+*.html text
+*.md text
+*.yml text
+*.yaml text
+*.toml text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+
+# Keep PowerShell scripts as text (LF is fine)
+*.ps1 text eol=lf

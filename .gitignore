@@ -1,0 +1,41 @@
+# Rust
+target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+database/*.db
+
+# IDEs
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# WASM build
+pkg/
+wasm-pack.log
+
+# Node
+node_modules/
+
+# Backup
+*.bak
+*.backup

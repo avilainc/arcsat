@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Backend Rust
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.railway
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=sqlite:///data/arcsat.db
+      - SCRAPER_SERVICE_URL=http://scraper:8001
+    volumes:
+      - ./data:/data
+    networks:
+      - arcsat-network
+
+  # Scraper Service
+  scraper:
+    build:
+      context: ./scraper-service
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=sqlite:///data/arcsat.db
+      - PROXY_ENABLED=false
+      - SCRAPER_MAX_CONCURRENT=5
+    volumes:
+      - ./scraper-service:/app
+      - ./data:/data
+    networks:
+      - arcsat-network
+    restart: unless-stopped
+
+networks:
+  arcsat-network:
+    driver: bridge

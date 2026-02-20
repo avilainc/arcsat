@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Avila Pulse</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Iconoir Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #007AFF;
+            --secondary: #5856D6;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --dark: #1D1D1F;
+            --dark-light: #F5F5F7;
+            --card-bg: #FFFFFF;
+            --text: #1D1D1F;
+            --text-muted: #6E6E73;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #F5F5F7;
+            color: var(--text);
+            min-height: 100vh;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1D1D1F;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1D1D1F;
+            border: 1px solid var(--border);
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sidebar */
+        .dashboard-layout {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: #F5F5F7;
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Metrics Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0px;
+            background: transparent;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .metric-title {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .metric-icon {
+            font-size: 1.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1D1D1F;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .metric-change.positive {
+            color: var(--success);
+        }
+
+        .metric-change.negative {
+            color: var(--danger);
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .chart-card canvas {
+            height: 300px !important;
+            width: 100% !important;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1D1D1F;
+            letter-spacing: -0.01em;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-controls button {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chart-controls button.active,
+        .chart-controls button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Notifications */
+        .notifications {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            animation: slideIn 0.3s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .notification.danger {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #1D1D1F;
+        }
+
+        .notification-message {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        /* Live Status */
+        .live-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--success);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        select,
+        input[type="date"] {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            color: #1D1D1F;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .notifications {
+                right: 1rem;
+                left: 1rem;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <span>📊</span>
+                <span>Avila Pulse</span>
+            </a>
+            <div class="header-controls">
+                <div class="live-status">
+                    <span class="live-dot"></span>
+                    <span>Live</span>
+                </div>
+                <button class="btn btn-secondary" onclick="exportData()">
+                    <i class="iconoir-download"></i>
+                    Exportar
+                </button>
+                <button class="btn btn-primary" onclick="toggleSettings()">
+                    <i class="iconoir-settings"></i>
+                    Configurações
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active"><i class="iconoir-dashboard-speed"></i> Overview</a></li>
+                <li><a href="#"><i class="iconoir-graph-up"></i> Analytics</a></li>
+                <li><a href="#"><i class="iconoir-bell"></i> Alertas</a></li>
+                <li><a href="#"><i class="iconoir-server"></i> Servidores</a></li>
+                <li><a href="#"><i class="iconoir-database"></i> Databases</a></li>
+                <li><a href="/AI"><i class="iconoir-brain"></i> Agentes IA</a></li>
+                <li><a href="#"><i class="iconoir-settings"></i> Configurações</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Filters -->
+            <div class="filters">
+                <select id="periodFilter" onchange="updateCharts()">
+                    <option value="1h">Última Hora</option>
+                    <option value="24h" selected>Últimas 24h</option>
+                    <option value="7d">Últimos 7 dias</option>
+                    <option value="30d">Últimos 30 dias</option>
+                </select>
+                <select id="metricFilter" onchange="updateCharts()">
+                    <option value="all">Todas as Métricas</option>
+                    <option value="performance">Performance</option>
+                    <option value="users">Usuários</option>
+                    <option value="errors">Erros</option>
+                </select>
+                <input type="date" id="startDate" onchange="updateCharts()">
+                <input type="date" id="endDate" onchange="updateCharts()">
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Total de Eventos</span>
+                        <span class="metric-icon">⚡</span>
+                    </div>
+                    <div class="metric-value" id="totalEvents">0</div>
+                    <div class="metric-change positive">
+                        <i class="iconoir-arrow-up"></i>
+                        <span>+12.5%</span>
+                        <span style="color: var(--text-muted); margin-left: 0.25rem;">vs ontem</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Usuários Ativos</span>
+                        <span class="metric-icon">👥</span>
+                    </div>
+                    <div class="metric-value" id="activeUsers">0</div>
+                    <div class="metric-change positive">
+                        <i class="iconoir-arrow-up"></i>
+                        <span>+8.3%</span>
+                        <span style="color: var(--text-muted); margin-left: 0.25rem;">vs ontem</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Latência Média</span>
+                        <span class="metric-icon">⏱️</span>
+                    </div>
+                    <div class="metric-value" id="avgLatency">0<span style="font-size: 1rem;">ms</span></div>
+                    <div class="metric-change negative">
+                        <i class="iconoir-arrow-down"></i>
+                        <span>-3.2%</span>
+                        <span style="color: var(--text-muted); margin-left: 0.25rem;">melhor</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Taxa de Erro</span>
+                        <span class="metric-icon">🚨</span>
+                    </div>
+                    <div class="metric-value" id="errorRate">0<span style="font-size: 1rem;">%</span></div>
+                    <div class="metric-change positive">
+                        <i class="iconoir-arrow-down"></i>
+                        <span>-15.7%</span>
+                        <span style="color: var(--text-muted); margin-left: 0.25rem;">melhor</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Eventos em Tempo Real</h3>
+                        <div class="chart-controls">
+                            <button class="active" onclick="changeChartPeriod('events', '1h')">1h</button>
+                            <button onclick="changeChartPeriod('events', '24h')">24h</button>
+                            <button onclick="changeChartPeriod('events', '7d')">7d</button>
+                        </div>
+                    </div>
+                    <canvas id="eventsChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Usuários Simultâneos</h3>
+                        <div class="chart-controls">
+                            <button class="active" onclick="changeChartPeriod('users', '1h')">1h</button>
+                            <button onclick="changeChartPeriod('users', '24h')">24h</button>
+                            <button onclick="changeChartPeriod('users', '7d')">7d</button>
+                        </div>
+                    </div>
+                    <canvas id="usersChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Performance (Latência)</h3>
+                        <div class="chart-controls">
+                            <button class="active" onclick="changeChartPeriod('latency', '1h')">1h</button>
+                            <button onclick="changeChartPeriod('latency', '24h')">24h</button>
+                            <button onclick="changeChartPeriod('latency', '7d')">7d</button>
+                        </div>
+                    </div>
+                    <canvas id="latencyChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Distribuição de Erros</h3>
+                        <div class="chart-controls">
+                            <button class="active" onclick="changeChartPeriod('errors', '1h')">1h</button>
+                            <button onclick="changeChartPeriod('errors', '24h')">24h</button>
+                            <button onclick="changeChartPeriod('errors', '7d')">7d</button>
+                        </div>
+                    </div>
+                    <canvas id="errorsChart"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer discreto -->
+        <div style="text-align: center; padding: 1rem; font-size: 0.75rem; color: #6E6E73;">
+            <span style="opacity: 0.3;">|</span> <a href="https://dashboard.tawk.to/#/dashboard/694f28753169ac197f3faf8d" target="_blank" style="color: #48484A; text-decoration: none; opacity: 0.5; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">·</a>
+        </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div class="notifications" id="notifications"></div>
+
+    <script>
+        // Generate time labels
+        function generateTimeLabels(period) {
+            const labels = [];
+            const points = period === '1h' ? 12 : period === '24h' ? 24 : 30;
+
+            for (let i = points - 1; i >= 0; i--) {
+                const date = new Date();
+                if (period === '1h') {
+                    date.setMinutes(date.getMinutes() - i * 5);
+                    labels.push(date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+                } else if (period === '24h') {
+                    date.setHours(date.getHours() - i);
+                    labels.push(date.toLocaleTimeString('pt-BR', { hour: '2-digit' }) + 'h');
+                } else {
+                    date.setDate(date.getDate() - i);
+                    labels.push(date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
+                }
+            }
+            return labels;
+        }
+
+        // Generate random data with trend
+        function generateData(points, min, max, trend = 0) {
+            const data = [];
+            let current = min + Math.random() * (max - min);
+
+            for (let i = 0; i < points; i++) {
+                current += (Math.random() - 0.5) * (max - min) * 0.1 + trend;
+                current = Math.max(min, Math.min(max, current));
+                data.push(Math.round(current));
+            }
+            return data;
+        }
+
+        // Chart.js default config
+        Chart.defaults.color = '#a1a1aa';
+        Chart.defaults.borderColor = 'rgba(102, 126, 234, 0.1)';
+
+        // Events Chart
+        const eventsCtx = document.getElementById('eventsChart').getContext('2d');
+        const eventsChart = new Chart(eventsCtx, {
+            type: 'line',
+            data: {
+                labels: generateTimeLabels('24h'),
+                datasets: [{
+                    label: 'Eventos/min',
+                    data: generateData(24, 500, 2000, 10),
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Users Chart
+        const usersCtx = document.getElementById('usersChart').getContext('2d');
+        const usersChart = new Chart(usersCtx, {
+            type: 'line',
+            data: {
+                labels: generateTimeLabels('24h'),
+                datasets: [{
+                    label: 'Usuários',
+                    data: generateData(24, 100, 500, 5),
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Latency Chart
+        const latencyCtx = document.getElementById('latencyChart').getContext('2d');
+        const latencyChart = new Chart(latencyCtx, {
+            type: 'line',
+            data: {
+                labels: generateTimeLabels('24h'),
+                datasets: [{
+                    label: 'Latência (ms)',
+                    data: generateData(24, 20, 80, -0.5),
+                    borderColor: '#eab308',
+                    backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Errors Chart (Doughnut)
+        const errorsCtx = document.getElementById('errorsChart').getContext('2d');
+        const errorsChart = new Chart(errorsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['4xx Errors', '5xx Errors', 'Timeouts', 'Network'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: [
+                        '#ef4444',
+                        '#f97316',
+                        '#eab308',
+                        '#667eea'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Live metrics update
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            const range = end - start;
+            let current = start;
+            const increment = range / (duration / 16);
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+
+                if (id === 'avgLatency' || id === 'errorRate') {
+                    obj.innerHTML = Math.round(current) + (id === 'avgLatency' ? '<span style="font-size: 1rem;">ms</span>' : '<span style="font-size: 1rem;">%</span>');
+                } else {
+                    obj.textContent = Math.round(current).toLocaleString('pt-BR');
+                }
+            }, 16);
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            animateValue('totalEvents', 0, Math.floor(Math.random() * 50000) + 100000, 1000);
+            animateValue('activeUsers', 0, Math.floor(Math.random() * 500) + 1500, 1000);
+            animateValue('avgLatency', 0, Math.floor(Math.random() * 30) + 35, 1000);
+            animateValue('errorRate', 0, (Math.random() * 1).toFixed(2), 1000);
+        }
+
+        // WebSocket simulation
+        function simulateWebSocket() {
+            setInterval(() => {
+                // Update charts with new data
+                const charts = [eventsChart, usersChart, latencyChart];
+                charts.forEach(chart => {
+                    chart.data.labels.shift();
+                    chart.data.labels.push(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+
+                    chart.data.datasets.forEach(dataset => {
+                        dataset.data.shift();
+                        const lastValue = dataset.data[dataset.data.length - 1];
+                        const newValue = lastValue + (Math.random() - 0.5) * lastValue * 0.1;
+                        dataset.data.push(Math.max(0, newValue));
+                    });
+
+                    chart.update('none');
+                });
+
+                // Random notifications
+                if (Math.random() > 0.7) {
+                    const notifications = [
+                        { type: 'success', title: 'Métrica Normal', message: 'Latência abaixo de 50ms' },
+                        { type: 'warning', title: 'Alerta', message: 'CPU acima de 80%' },
+                        { type: 'danger', title: 'Erro Crítico', message: 'Falha na conexão DB' }
+                    ];
+                    const notif = notifications[Math.floor(Math.random() * notifications.length)];
+                    showNotification(notif.type, notif.title, notif.message);
+                }
+            }, 5000);
+        }
+
+        // Show notification
+        function showNotification(type, title, message) {
+            const container = document.getElementById('notifications');
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+
+            const icons = {
+                success: '✅',
+                warning: '⚠️',
+                danger: '🚨'
+            };
+
+            notif.innerHTML = `
+                <span class="notification-icon">${icons[type]}</span>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+                <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+            `;
+
+            container.appendChild(notif);
+
+            setTimeout(() => notif.remove(), 5000);
+        }
+
+        // Export data
+        function exportData() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                totalEvents: document.getElementById('totalEvents').textContent,
+                activeUsers: document.getElementById('activeUsers').textContent,
+                avgLatency: document.getElementById('avgLatency').textContent,
+                errorRate: document.getElementById('errorRate').textContent
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pulse-metrics-${Date.now()}.json`;
+            a.click();
+
+            showNotification('success', 'Exportado', 'Dados exportados com sucesso!');
+        }
+
+        // Change chart period
+        function changeChartPeriod(chartName, period) {
+            event.target.parentElement.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update chart labels and data based on period
+            const points = period === '1h' ? 12 : period === '24h' ? 24 : 30;
+
+            if (chartName === 'events') {
+                eventsChart.data.labels = generateTimeLabels(period);
+                eventsChart.data.datasets[0].data = generateData(points, 500, 2000, 10);
+                eventsChart.update();
+            } else if (chartName === 'users') {
+                usersChart.data.labels = generateTimeLabels(period);
+                usersChart.data.datasets[0].data = generateData(points, 100, 500, 5);
+                usersChart.update();
+            } else if (chartName === 'latency') {
+                latencyChart.data.labels = generateTimeLabels(period);
+                latencyChart.data.datasets[0].data = generateData(points, 20, 80, -0.5);
+                latencyChart.update();
+            }
+        }
+
+        // Update charts on filter change
+        function updateCharts() {
+            showNotification('success', 'Atualizado', 'Filtros aplicados com sucesso!');
+        }
+
+        // Toggle settings
+        function toggleSettings() {
+            alert('Painel de configurações em breve!');
+        }
+
+        // Initialize
+        updateMetrics();
+        simulateWebSocket();
+
+        // Set default dates
+        document.getElementById('endDate').valueAsDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 7);
+        document.getElementById('startDate').valueAsDate = startDate;
+    </script>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/694f28753169ac197f3faf8d/1jdejc2qr';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
+</body>
+
+</html>
