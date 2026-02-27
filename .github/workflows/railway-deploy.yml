@@ -1,9 +1,9 @@
 name: Deploy to Railway
 
+# Only deploy on push to main branch
+# Pull requests should not trigger deployments to avoid unintended changes
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -16,11 +16,10 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy Backend to Railway
+        working-directory: ./backend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          cd backend
-          railway up --service backend
+        run: railway up --service=${{ secrets.RAILWAY_SERVICE_BACKEND }}
 
   deploy-frontend:
     runs-on: ubuntu-latest
@@ -32,8 +31,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy Frontend to Railway
+        working-directory: ./frontend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          cd frontend
-          railway up --service frontend
+        run: railway up --service=${{ secrets.RAILWAY_SERVICE_FRONTEND }}
